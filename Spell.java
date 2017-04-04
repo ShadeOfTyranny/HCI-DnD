@@ -890,142 +890,373 @@ public class Spell {
 					+ "damage occurs each round it remains in the vortex.";
 			setSpell("1 action", "300 feet", "V, S, M (a drop of water and a pinch of dust)", "Concentration, up to 10 minutes", 4, false);
 			break;
-			// TODO:
 		case "Control Weather":
-			description = "";
+			description = "You take control of the weather within 5 miles of you for the duration. You must be outdoors to cast this spell. "
+					+ "Moving to a place where you don’t have a clear path to the sky ends the spell early.\n"
+					+ "When you cast the spell, you change the current weather conditions, which are determined by the DM "
+					+ "based on the climate and season. You can change precipitation, temperature, and wind. It takes 1d4 x 10 "
+					+ "minutes for the new conditions to take effect. Once they do so, you can change the conditions again. When the "
+					+ "spell ends, the weather gradually returns to normal.\n"
+					+ "When you change the weather conditions, find a current condition on the following tables and change its "
+					+ "stage by one, up or down. When changing the wind, you can change its direction.\n"
+					+ "Precipitation\n"
+					+ "Stage Condition\n"
+					+ "1     Clear\n"
+					+ "2     Light clouds\n"
+					+ "3     Overcast or ground fog\n"
+					+ "4     Rain, hail, or snow\n"
+					+ "5     Torrential rain, driving hail, or blizzard\n"
+					+ "Temperature\n"
+					+ "Stage Condition\n"
+					+ "1     Unbearable heat\n"
+					+ "2     Hot\n"
+					+ "3     Warm\n"
+					+ "4     Cool\n"
+					+ "5     Cold\n"
+					+ "6     Arctic cold\n"
+					+ "Wind\n"
+					+ "Stage Condition\n"
+					+ "1     Calm\n"
+					+ "2     Moderate wind\n"
+					+ "3     Strong wind\n"
+					+ "4     Gale\n"
+					+ "5 Storm";
 			setSpell("10 minutes", "Self (5-mile radius)", "V, S, M (burning incense and bits of earth and wood mixed in water", "Concentration, up to 8 hours", 8, false);
 			break;
 		case "Cordon of Arrows":
-			description = "";
+			description = "You plant four pieces of nonmagical ammunition — arrows or crossbow bolts — in the ground within range "
+					+ "and lay magic upon them to protect an area. Until the spell ends, whenever a creature other than you comes "
+					+ "within 30 feet of the ammunition for the first time on a turn or ends its turn there, one piece of ammunition flies "
+					+ "up to strike it. The creature must succeed on a Dexterity saving throw or take 1d6 piercing damage. The piece of "
+					+ "ammunition is then destroyed. The spell ends when no ammunition remains.\n"
+					+ "When you cast this spell, you can designate any creatures you choose, and the spell ignores them.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the amount of "
+					+ "ammunition that can be affected increases by two for each slot level above 2nd.";
 			setSpell("1 action", "5 feet", "V, S, M (four or more arrows or bolts)", "8 hours", 2, false);
 			break;
 		case "Counterspell":
-			description = "";
+			description = "You attempt to interrupt a creature in the process of casting a spell. If the creature is casting a spell of 3rd "
+					+ "level or lower, its spell fails and has no effect. If it is casting a spell of 4th level or higher, make an ability "
+					+ "check using your spellcasting ability. The DC equals 10 + the spell’s level. On a success, the creature’s spell fails and has no effect.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 4th level or higher, the interrupted spell has "
+					+ "no effect if its level is less than or equal to the level of the spell slot you used.";
 			setSpell("1 reaction, which you take when you see a creature within 60 feet of you casting a spell", "60 feet", "S", "Instantaneous", 3, false);
 			break;
 		case "Create Food and Water":
-			description = "";
+			description = "You create 45 pounds of food and 30 gallons of water on the ground or in containers within range, enough "
+					+ "to sustain up to fifteen humanoids or five steeds for 24 hours. The food is bland but nourishing, and spoils "
+					+ "if uneaten after 24 hours. The water is clean and doesn’t go bad.";
 			setSpell("1 action", "30 feet", "V, S", "Instantaneous", 3, false);
 			break;
 		case "Create or Destroy Water":
-			description = "";
+			description = "You either create or destroy water.\n"
+					+ "Create Water. You create up to 10 gallons of clean water within range in an open container. Alternatively, "
+					+ "the water falls as rain in a 30-foot cube within range, extinguishing exposed flames in the area.\n"
+					+ "Destroy Water. You destroy up to 10 gallons of water in an open container within range. Alternatively, you "
+					+ "destroy fog in a 30-foot cube within range.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, you create or destroy "
+					+ "10 additional gallons of water, or the size of the cube increases by 5 feet, for each slot level above 1st.";
 			setSpell("1 action", "30 feet", "V, S, M (a drop of water if creating water or a few grains of sand if destroying it)", "Instantaneous", 1, false);
 			break;
 		case "Create Undead":
-			description = "";
+			description = "You can cast this spell only at night. Choose up to three corpses of Medium or Small hum anoids within range. "
+					+ "Each corpse becomes a ghoul under your control. (The DM has game statistics for these creatures.)\n"
+					+ "As a bonus action on each of your turns, you can mentally command any creature you animated with "
+					+ "this spell if the creature is within 120 feet of you (if you control multiple creatures, you can command any or all "
+					+ "of them at the same time, issuing the same command to each one). You decide what action the creature will take "
+					+ "and where it will move during its next turn, or you can issue a general command, such as to guard a particular "
+					+ "chamber or corridor. If you issue no commands, the creature only defends itself against hostile creatures. "
+					+ "Once given an order, the creature continues to follow it until its task is complete.\n"
+					+ "The creature is under your control for 24 hours, after which it stops obeying any command you have "
+					+ "given it. To maintain control of the creature for another 24 hours, you must cast this spell on the creature "
+					+ "before the current 24-hour period ends. This use of the spell reasserts your control over up to three "
+					+ "creatures you have animated with this spell, rather than animating new ones.\n"
+					+ "At Higher Levels. When you cast this spell using a 7th-level spell slot, you can animate or reassert control "
+					+ "over four ghouls. When you cast this spell using an 8th-level spell slot, you can animate or reassert control "
+					+ "over five ghouls or two ghasts or wights. When you cast this spell using a 9th-level spell slot, you can animate or "
+					+ "reassert control over six ghouls, three ghasts or wights, or two mummies.";
 			setSpell("1 minute", "10 feet", "V, S, M (one clay pot filled with grave dirt, one clay pot filled with brackish water, and one 150 gp black onyx stone for"
 					+ " each corpse)", "Instantaneous", 6, false);
 			break;
 		case "Creation":
-			description = "";
+			description = "You pull wisps of shadow material from the Shadowfell to create a nonliving object of vegetable matter within"
+					+ "range: soft goods, rope, wood, or something similar. You can also use this spell to create mineral objects such as"
+					+ "stone, crystal, or metal. The object created must be no larger than a 5-foot cube, and the object must be of a"
+					+ "form and material that you have seen before.\n"
+					+ "The duration depends on the object’s material. If the object is composed of multiple materials, use the shortest duration.\n"
+					+ "Materials:\n"
+					+ "Vegetable matter: 1 day\n"
+					+ "Stone or crystal: 12 hours\n"
+					+ "Precious metals: 1 hour\n"
+					+ "Gems: 10 minutes\n"
+					+ "Adamantine or mithral: 1 minute\n"
+					+ "Using any material created by this spell as another spell’s material component causes that spell to fail.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 6th level or higher, the cube increases by 5 feet for each slot level above 5th.";
 			setSpell("1 minute", "30 feet", "V, S, M (a tiny piece of matter of the same type of the item you plan to create)", "Special", 5, false);
 			break;
 		case "Crown of Madness":
-			description = "";
+			description = "One humanoid of your choice that you can see within range must succeed on a Wisdom saving throw or "
+					+ "become charm ed by you for the duration. While the target is charmed in this way, a twisted crown "
+					+ "of jagged iron appears on its head, and a madness glows in its eyes.\n"
+					+ "The charmed target must use its action before moving on each of its turns to make a melee attack against a "
+					+ "creature other than itself that you mentally choose. The target can act normally on its turn if you choose no "
+					+ "creature or if none are within its reach.\nOn your subsequent turns, you must use your action to "
+					+ "maintain control over the target, or the spell ends. Also, the target can make a Wisdom saving throw at the end "
+					+ "of each of its turns. On a success, the spell ends.";
 			setSpell("1 action", "120 feet", "V, S", "Concentration, up to 1 minute", 2, false);
 			break;
 		case "Crusader's Mantle":
-			description = "";
+			description = "Holy power radiates from you in an aura with a 30-foot radius, awakening boldness in friendly creatures. Until "
+					+ "the spell ends, the aura moves with you, centered on you. While in the aura, each nonhostile creature in the "
+					+ "aura (including you) deals an extra 1d4 radiant damage when it hits with a weapon attack.";
 			setSpell("1 action", "Self", "V", "Concentration, up to 1 minute", 3, false);
 			break;
 		case "Cure Wounds":
-			description = "";
+			description = "A creature you touch regains a number of hit points equal to 1d8 + your spellcasting ability modifier. This "
+					+ "spell has no effect on undead or constructs.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d8 for each slot level above 1st.";
 			setSpell("1 action", "Touch", "V, S", "Instantaneous", 1, false);
 			break;
 		case "Dancing Lights":
-			description = "";
+			description = "You create up to four torch-sized lights within range, making them appear as torches, lanterns, or glowing "
+					+ "orbs that hover in the air for the duration. You can also combine the four lights into one glowing vaguely "
+					+ "humanoid form of Medium size. Whichever form you choose, each light sheds dim light in a 10-foot radius.\n"
+					+ "As a bonus action on your turn, you can move the lights up to 60 feet to a new spot within range. A light "
+					+ "must be within 20 feet of another light created by this spell, and a light w inks out if it exceeds the spell’s range.";
 			setSpell("1 action", "120 feet", "V, S, M (a bit of phosphorus or wychwood, or a glowworm)", "Concentration, up to 1 minute", 0, false);
 			break;
 		case "Darkness":
-			description = "";
+			description = "Magical darkness spreads from a point you choose within range to fill a 15-foot-radius sphere for the "
+					+ "duration. The darkness spreads around corners. A creature with darkvision can’t see through this "
+					+ "darkness, and nonmagical light can’t illuminate it.\n"
+					+ "If the point you choose is on an object you are holding or one that isn’t being worn or carried, the darkness "
+					+ "emanates from the object and moves with it. Completely covering the source of the darkness with an opaque "
+					+ "object, such as a bowl or a helm, blocks the darkness.\n"
+					+ "If any of this spell’s area overlaps with an area of light created by a spell of 2nd level or lower, the spell that created the light is dispelled.";
 			setSpell("1 action", "60 feet", "V, M (bat fur and a drop of pitch or piece of coal)", "Concentration, up to 10 minutes", 2, false);
 			break;
 		case "Darkvision":
-			description = "";
+			description = "You touch a willing creature to grant it the ability to see in the dark. For the duration, that creature has darkvision out to a range of 60 feet.";
 			setSpell("1 action", "Touch", "V, S, M (either a pinch of dried carrot or an agate)", "8 hours", 2, false);
 			break;
 		case "Daylight":
-			description = "";
+			description = "A 60-foot-radius sphere of light spreads out from a point you choose within range. The sphere is bright light and "
+					+ "sheds dim light for an additional 60 feet.\n"
+					+ "If you chose a point on an object you are holding or one that isn’t being worn or carried, the light shines "
+					+ "from the object and moves with it. Completely covering the affected object with an opaque object, such as a bowl or a helm, blocks the light.\n"
+					+ "If any of this spell’s area overlaps with an area of darkness created by a spell of 3rd level or lower, the "
+					+ "spell that created the darkness is dispelled.";
 			setSpell("1 action", "60 feet", "V, S", "1 hour", 3, false);
 			break;
 		case "Death Ward":
-			description = "";
+			description = "You touch a creature and grant it a measure of protection from death.\n"
+					+ "The first time the target would drop to 0 hit points as a result of taking damage, the target instead drops to 1 hit point, and the spell ends.\n"
+					+ "If the spell is still in effect when the target is subjected to an effect that would kill it instantaneously without "
+					+ "dealing damage, that effect is instead negated against the target, and the spell ends.";
 			setSpell("1 action", "Touch", "V, S", "8 hours", 4, false);
 			break;
 		case "Delayed Blast Fireball":
-			description = "";
+			description = "A beam of yellow light flashes from your pointing finger, then condenses to linger at a chosen point within range "
+					+ "as a glowing bead for the duration. When the spell ends, either because your concentration is broken or "
+					+ "because you decide to end it, the bead blossoms with a low roar into an explosion of flame that spreads around "
+					+ "corners. Each creature in a 20-foot-radius sphere centered on that point must make a Dexterity saving "
+					+ "throw. A creature takes fire damage equal to the total accumulated damage on a failed save, or half as much damage on a successful one.\n"
+					+ "The spell’s base damage is 12d6. If at the end of your turn the bead has not yet detonated, the damage increases by 1d6.\n"
+					+ "If the glowing bead is touched before the interval has expired, the creature touching it must make a "
+					+ "Dexterity saving throw. On a failed save, the spell ends immediately, causing the bead to erupt in flame. On a "
+					+ "successful save, the creature can throw the bead up to 40 feet. When it strikes a creature or a solid object, the spell ends, and the bead explodes.\n"
+					+ "The fire damages objects in the area and ignites flammable objects that aren’t being worn or carried.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 8th level or higher, the base damage increases by 1d6 for each slot level above 7th.";
 			setSpell("1 action", "150 feet", "V, S, M (a tiny ball of bat guano and sulfur)", "Concentration, up to 1 minute", 7, false);
 			break;
 		case "Demiplane":
-			description = "";
+			description = "You create a shadowy door on a flat solid surface that you can see within range. The door is large enough to "
+					+ "allow Medium creatures to pass through unhindered. When opened, the door leads to a demiplane that "
+					+ "appears to be an empty room 30 feet in each dimension, made of wood or stone. When the spell ends, the door "
+					+ "disappears, and any creatures or objects inside the demiplane remain trapped there, as the door also disappears from the other side.\n"
+					+ "Each time you cast this spell, you can create a new demiplane, or have the shadowy door connect to a "
+					+ "demiplane you created with a previous casting of this spell. Additionally, if you know the nature and contents "
+					+ "of a demiplane created by a casting of this spell by another creature, you can have the shadowy door connect to its demiplane instead.";
 			setSpell("1 action", "60 feet", "S", "1 hour", 8, false);
 			break;
 		case "Destructive Wave":
-			description = "";
+			description = "You strike the ground, creating a burst of divine energy that ripples outward from you. Each creature "
+					+ "you choose within 30 feet of you must succeed on a Constitution saving throw or take 5d6 thunder damage, "
+					+ "as well as 5d6 radiant or necrotic damage (your choice), and be knocked prone. A creature that succeeds on "
+					+ "its saving throw takes half as much damage and isn’t knocked prone.";
 			setSpell("1 action", "Self (30-foot radius)", "V", "Instantaneous", 5, false);
 			break;
-			// TODO:
 		case "Detect Evil and Good":
-			description = "";
+			description = "For the duration, you know if there is an aberration, celestial, elemental, fey, fiend, or undead within 30 "
+					+ "feet of you, as well as where the creature is located. Similarly, you know if there is a place or object within "
+					+ "30 feet of you that has been magically consecrated or desecrated.\n"
+					+ "The spell can penetrate most barriers, but it is blocked by 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood or dirt.";
 			setSpell("1ac", "Self", "V, S", "con10min", 1, false);
 			break;
 		case "Detect Magic":
-			description = "";
+			description = "For the duration, you sense the presence of magic within 30 feet of you. If you sense magic in this way, you "
+					+ "can use your action to see a faint aura around any visible creature or object in the area that bears magic, and you "
+					+ "learn its school of magic, if any.\n"
+					+ "The spell can penetrate most barriers, but it is blocked by 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood or dirt.";
 			setSpell("1ac", "Self", "V, S", "con10min", 1, true);
 			break;
 		case "Detect Poison and Disease":
-			description = "";
+			description = "For the duration, you can sense the presence and location of poisons, poisonous creatures, and diseases "
+					+ "within 30 feet of you. You also identify the kind of poison, poisonous creature, or disease in each case.\n"
+					+ "The spell can penetrate most barriers, but it is blocked by 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood or dirt.";
 			setSpell("1ac", "Self", "V, S, M (a yew leaf)", "con10min", 1, true);
 			break;
 		case "Detect Thoughts":
-			description = "";
+			description = "For the duration, you can read the thoughts of certain creatures. When you cast the spell and as your action on "
+					+ "each turn until the spell ends, you can focus your mind on any one creature that you can see within 30 feet of "
+					+ "you. If the creature you choose has an Intelligence of 3 or lower or doesn’t speak any language, the creature is unaffected.\n"
+					+ "You initially learn the surface thoughts of the creature — what is most on its mind in that moment. As "
+					+ "an action, you can either shift your attention to another creature’s thoughts or attempt to probe deeper into the "
+					+ "same creature’s mind. If you probe deeper, the target must make a Wisdom saving throw. If it fails, you gain "
+					+ "insight into its reasoning (if any), its emotional state, and something that looms large in its mind (such as "
+					+ "something it worries over, loves, or hates). If it succeeds, the spell ends. Either way, the target knows that you are "
+					+ "probing into its mind, and unless you shift your attention to another creature’s thoughts, the creature can use "
+					+ "its action on its turn to make an Intelligence check contested by your Intelligence check; if it succeeds, the spell ends.\n"
+					+ "Questions verbally directed at the target creature naturally shape the course of its thoughts, so this spell "
+					+ "is particularly effective as part of an interrogation.\n"
+					+ "You can also use this spell to detect the presence of "
+					+ "thinking creatures you can’t see. When you cast the spell or as your action during the duration, you can "
+					+ "search for thoughts within 30 feet of you. The spell can penetrate barriers, but 2 feet of rock, 2 inches of any "
+					+ "metal other than lead, or a thin sheet of lead blocks you. You can’t detect a creature with an Intelligence of 3 or "
+					+ "lower or one that doesn’t speak any language.\n"
+					+ "Once you detect the presence of a creature in this way, you can read its thoughts for the rest of the duration as "
+					+ "described above, even if you can’t see it, but it must still be within range.";
 			setSpell("1ac", "Self", "V, S, M (a copper piece)", "con10min", 2, false);
 			break;
 		case "Dimension Door":
-			description = "";
+			description = "You teleport yourself from your current location to any other spot within range. You arrive at exactly the spot "
+					+ "desired. It can be a place you can see, one you can visualize, or one you can describe by stating distance "
+					+ "and direction, such as “200 feet straight downward” or “upward to the northwest at a 45-degree angle, 300 feet.”\n"
+					+ "You can bring along objects as long as their weight doesn’t exceed what you can carry. You can also bring "
+					+ "one willing creature of your size or smaller who is carrying gear up to its carrying capacity. The creature "
+					+ "must be within 5 feet of you when you cast this spell.\n"
+					+ "If you would arrive in a place already occupied by an object or a creature, you and any creature traveling with "
+					+ "you each take 4d6 force damage, and the spell fails to teleport you.";
 			setSpell("1ac", "500 feet", "V", "in", 4, false);
 			break;
 		case "Disguise Self":
-			description = "";
+			description = "You make yourself — including your clothing, armor, weapons, and other belongings on your person — look "
+					+ "different until the spell ends or until you use your action to dismiss it. You can seem 1 foot shorter or taller and "
+					+ "can appear thin, fat, or in between. You can’t change your body type, so you must adopt a form that has the "
+					+ "same basic arrangement of limbs. Otherwise, the extent of the illusion is up to you.\n"
+					+ "The changes wrought by this spell fail to hold up to physical inspection. For example, if you use this spell "
+					+ "to add a hat to your outfit, objects pass through the hat, and anyone who touches it would feel nothing or would "
+					+ "feel your head and hair. If you use this spell to appear thinner than you are, the hand of someone who reaches "
+					+ "out to touch you would bump into you while it was seemingly still in midair.\n"
+					+ "To discern that you are disguised, a creature can use its action to inspect your appearance and must succeed "
+					+ "on an Intelligence (Investigation) check against your spell save DC.";
 			setSpell("1ac", "Self", "V, S", "1 hour", 1, false);
 			break;
 		case "Disintegrate":
-			description = "";
+			description = "A thin green ray springs from your pointing finger to a target that you can see within range. The target can be a "
+					+ "creature, an object, or a creation of magical force, such as the wall created by wall of force.\n"
+					+ "A creature targeted by this spell must make a Dexterity saving throw. On a failed save, the target takes "
+					+ "10d6 + 40 force damage. If this damage reduces the target to 0 hit points, it is disintegrated.\n"
+					+ "A disintegrated creature and everything it is wearing and carrying, except magic items, are reduced to a pile "
+					+ "of fine gray dust. The creature can be restored to life only by means of a true resurrection or a wish spell.\n"
+					+ "This spell automatically disintegrates a Large or smaller nonmagical object or a creation of magical "
+					+ "force. If the target is a Huge or larger object or creation of force, this spell disintegrates a 10-foot-cube portion of "
+					+ "it. A magic item is unaffected by this spell.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 7th level or higher, the damage increases by 3d6 for each slot level above 6th.";
 			setSpell("1ac", "60 feet", "V, S, M (a lodestone and a pinch of dust)", "in", 6, false);
 			break;
 		case "Dispel Evil and Good":
-			description = "";
+			description = "Shimmering energy surrounds and protects you from fey, undead, and creatures originating from beyond the "
+					+ "Material Plane. For the duration, celestials, elementals, fey, fiends, and undead have disadvantage on attack rolls against you.\n"
+					+ "You can end the spell early by using either of the following special functions.\n"
+					+ "Break Enchantment. As your action, you touch a creature you can reach that is charmed, frightened, or "
+					+ "possessed by a celestial, an elemental, a fey, a fiend, or an undead. The creature you touch is no longer "
+					+ "charmed, frightened, or possessed by such creatures.\n"
+					+ "Dismissal. As your action, make a melee spell attack against a celestial, an elemental, a fey, a fiend, or an "
+					+ "undead you can reach. On a hit, you attempt to drive the creature back to its home plane. The creature must "
+					+ "succeed on a Charisma saving throw or be sent back to its home plane (if it isn't there already). If they aren’t on "
+					+ "their home plane, undead are sent to the Shadowfell, and fey are sent to the Feywild.";
 			setSpell("1ac", "Self", "V, S, M (holy water or powdered silver and iron)", "con1min", 5, false);
 			break;
 		case "Dispel Magic":
-			description = "";
+			description = "Choose one creature, object, or magical effect within range. Any spell of 3rd level or lower on the target ends. "
+					+ "For each spell of 4th level or higher on the target, make an ability check using your spellcasting ability. The "
+					+ "DC equals 10 + the spell’s level. On a successful check, the spell ends.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 4th level or higher, you automatically end "
+					+ "the effects of a spell on the target if the spell’s level is equal to or less than the level of the spell slot you used.";
 			setSpell("1ac", "120 feet", "V, S", "in", 3, false);
 			break;
 		case "Dissonant Whispers":
-			description = "";
+			description = "You whisper a discordant melody that only one creature of your choice within range can hear, wracking it with "
+					+ "terrible pain. The target must make a Wisdom saving throw. On a failed save, it takes 3d6 psychic damage and "
+					+ "must immediately use its reaction, if available, to move as far as its speed allows away from you. The creature "
+					+ "doesn’t move into obviously dangerous ground, such as a fire or a pit. On a successful save, the target takes "
+					+ "half as much damage and doesn’t have to move away. A deafened creature automatically succeeds on the save.\n"
+					+ "At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d6 for each slot level above 1st.";
 			setSpell("1ac", "60 feet", "V", "in", 1, false);
 			break;
 		case "Divination":
-			description = "";
+			description = "Your magic and an offering put you in contact with a god or a god’s servants. You ask a single question "
+					+ "concerning a specific goal, event, or activity to occur within 7 days. The DM offers a truthful reply. The reply "
+					+ "might be a short phrase, a cryptic rhyme, or an omen.\n"
+					+ "The spell doesn’t take into account any possible circumstances that might change the outcome, such "
+					+ "as the casting of additional spells or the loss or gain of a companion.\n"
+					+ "If you cast the spell two or more times before finishing your next long rest, there is a cumulative 25 percent "
+					+ "chance for each casting after the first that you get a random reading. The DM makes this roll in secret.";
 			setSpell("1ac", "Self", "V, S, M (incense and a sacrificial offering appropriate to your religion, together worth at least 25 gp, which the "
 					+ "spell consumes)", "in", 4, true);
 			break;
 		case "Divine Favor":
-			description = "";
+			description = "Your prayer empowers you with divine radiance. Until the spell ends, your weapon attacks deal an extra 1d4 radiant damage on a hit.";
 			setSpell("1bonac", "Self", "V, S", "con1min", 1, false);
 			break;
 		case "Divine Word":
-			description = "";
+			description = "You utter a divine word, imbued with the power that shaped the world at the dawn of creation. Choose any "
+					+ "number of creatures you can see within range. Each creature that can hear you must make a Charisma "
+					+ "saving throw. On a failed save, a creature suffers an effect based on its current hit points:\n"
+					+ "- 50 hit points or fewer: deafened for 1 minute\n"
+					+ "- 40 hit points or fewer: deafened and blinded for 10 minutes\n"
+					+ "- 30 hit points or fewer: blinded, deafened, and stunned for 1 hour\n"
+					+ "- 20 hit points or fewer: killed instantly\n"
+					+ "Regardless of its current hit points, a celestial, an elemental, a fey, or a fiend that fails its save is forced "
+					+ "back to its plane of origin (if it isn’t there already) and can’t return to your current plane for 24 hours by any "
+					+ "means short of a wish spell.";
 			setSpell("1bonac", "30 feet", "V", "in", 7, false);
 			break;
 		case "Dominate Beast":
-			description = "";
+			description = "You attempt to beguile a beast that you can see within range. It must succeed on a Wisdom saving throw or be "
+					+ "charmed by you for the duration. If you or creatures that are friendly to you are fighting it, it has advantage on the saving throw.\n"
+					+ "While the beast is charmed, you have a telepathic link with it as long as the two of you are on the same plane "
+					+ "of existence. You can use this telepathic link to issue commands to the creature while you are conscious (no "
+					+ "action required), which it does its best to obey. You can specify a simple and general course of action, such as "
+					+ "“Attack that creature,” “Run over there,” or “Fetch that object.” If the creature completes the order and doesn’t "
+					+ "receive further direction from you, it defends and preserves itself to the best of its ability.\n"
+					+ "You can use your action to take total and precise control of the target. Until the end of your next turn, the "
+					+ "creature takes only the actions you choose, and doesn’t do anything that you don’t allow it to do. During this "
+					+ "time, you can also cause the creature to use a reaction, but this requires you to use your own reaction as well.\n"
+					+ "Each time the target takes damage, it makes a new Wisdom saving throw against the spell. If the saving throw succeeds, the spell ends.\n"
+					+ "At Higher Levels. When you cast this spell with a 5th-level spell slot, the duration is concentration, up "
+					+ "to 10 minutes. When you use a 6th-level spell slot, the duration is concentration, up to 1 hour. When you "
+					+ "use a spell slot of 7th level or higher, the duration is concentration, up to 8 hours.";
 			setSpell("1ac", "60 feet", "V, S", "con1min", 4, false);
 			break;
 		case "Dominate Monster":
-			description = "";
+			description = "You attempt to beguile a creature that you can see within range. It must succeed on a Wisdom saving "
+					+ "throw or be charmed by you for the duration. If you or creatures that are friendly to you are fighting it, it has advantage on the saving throw.\n"
+					+ "While the creature is charmed, you have a telepathic link with it as long as the two of you are on the same "
+					+ "plane of existence. You can use this telepathic link to issue commands to the creature while you are conscious "
+					+ "(no action required), which it does its best to obey. You can specify a simple and general course of action, such "
+					+ "as “Attack that creature,” “Run over there,” or “Fetch that object.” If the creature completes the order and "
+					+ "doesn’t receive further direction from you, it defends and preserves itself to the best of its ability.\n"
+					+ "You can use your action to take total and precise control of the target. Until the end of your next turn, the "
+					+ "creature takes only the actions you choose, and doesn’t do anything that you don’t allow it to do. During this "
+					+ "time, you can also cause the creature to use a reaction, "
+					+ "but this requires you to use your own reaction as well.\n"
+					+ "Each time the target takes damage, it makes a new Wisdom saving throw against the spell. If the saving throw succeeds, the spell ends.\n"
+					+ "At Higher Levels. When you cast this spell with a 9th-level spell slot, the duration is concentration, up to 8 hours.";
 			setSpell("1ac", "60 feet", "V, S", "con1h", 8, false);
 			break;
+			//TODO:
 		case "Dominate Person":
 			description = "";
 			setSpell("1ac", "60 feet", "V, S", "con1min", 5, false);
