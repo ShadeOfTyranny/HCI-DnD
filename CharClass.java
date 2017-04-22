@@ -75,6 +75,7 @@ public class CharClass {
 	// constructor for custom class
 	public CharClass(String name, int hitDie, int level) {
 		this();
+		// TODO: don't let the name be the name of a non-custom class
 		this.name = name;
 		this.hitDie = hitDie;
 		this.level = level;
@@ -118,7 +119,6 @@ public class CharClass {
 		hitDie = 10;
 		profs[0] = true; // str
 		profs[2] = true; // con
-		// TODO: should there be a popup here?
 		features.add(new Feature("Fighting Style"));
 		features.add(new Feature("Second Wind"));
 	}
@@ -143,7 +143,6 @@ public class CharClass {
 		hitDie = 10;
 		profs[0] = true; // str
 		profs[1] = true; // dex
-		// TODO: another popup? Or should these be in the features?
 		features.add(new Feature("Favored Enemy"));
 		features.add(new Feature("Natural Explorer"));
 	}
@@ -181,10 +180,48 @@ public class CharClass {
 		features.add(new Feature("Arcane Recovery"));
 	}
 	
-	private void levelUp() {
+	public void levelUp() {
+		// If custom class is named the same, there will be problems
 		switch (name) {
 		case "Barbarian":
-			
+			levelBarbarian();
+			break;
+		case "Bard":
+			levelBard();
+			break;
+		case "Cleric":
+			levelCleric();
+			break;
+		case "Druid":
+			levelDruid();
+			break;
+		case "Fighter":
+			levelFighter();
+			break;
+		case "Monk":
+			levelMonk();
+			break;
+		case "Paladin":
+			levelPaladin();
+			break;
+		case "Ranger":
+			levelRanger();
+			break;
+		case "Rogue":
+			levelRogue();
+			break;
+		case "Sorcerer":
+			levelSorcerer();
+			break;
+		case "Warlock":
+			levelWarlock();
+			break;
+		case "Wizard":
+			levelWizard();
+			break;
+		default:
+			// TODO:
+			break;
 		}
 	}
 	
@@ -212,50 +249,529 @@ public class CharClass {
 	}
 	
 	private void levelBard() {
-		
+		// TODO
+		level++;
+		switch (level) {
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		case 8:
+			break;
+		case 9:
+			break;
+		case 10:
+			break;
+		case 11:
+			break;
+		case 12:
+			break;
+		case 13:
+			break;
+		case 14:
+			break;
+		case 15:
+			break;
+		case 16:
+			break;
+		case 17:
+			break;
+		case 18:
+			break;
+		case 19:
+			break;
+		case 20:
+			break;
+		default:
+			break;
+		}
 	}
 	
 	private void levelCleric() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	
 	private void levelDruid() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	
 	private void levelFighter() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 
 	private void levelMonk() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	
 	private void levelPaladin() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	
 	private void levelRanger() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	
 	private void levelRogue() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	
 	private void levelSorcerer() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	
 	private void levelWarlock() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	
 	private void levelWizard() {
-		
+		// TODO
+				level++;
+				switch (level) {
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+				case 9:
+					break;
+				case 10:
+					break;
+				case 11:
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
+				case 14:
+					break;
+				case 15:
+					break;
+				case 16:
+					break;
+				case 17:
+					break;
+				case 18:
+					break;
+				case 19:
+					break;
+				case 20:
+					break;
+				default:
+					break;
+				}
 	}
 	// setters
+	public void setName(String s) { name = s; }
 	public void setPath(String s) { path = s; }
+	public void setHitDie(int i) { hitDie = i; }
+	public void setLevel(int i) { level = i; }
+	public void setProfs(boolean[] b) { profs = b; }
+	public void setFeatures(ArrayList<Feature> feats) { features = feats; }
+	public void setSpellCaster(boolean b) { spellCaster = b; }
 	
 	// getters
 	public String getName() { return name; }

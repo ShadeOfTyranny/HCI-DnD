@@ -38,12 +38,12 @@ public class SubRace {
 			name = "Wood Elf";
 			statMods[4] = 1; // wis
 			features.add(new Feature("Mask of the Wild"));
-			// speed changes from 30 to 35
+			// speed changes from 30 to 35, dealt with in Race class
 			break;
 		case 4:
 			name = "Dark Elf (Drow)";
 			statMods[5] = 1; //cha
-			features.add(new Feature("Superior Darkvision")); // replaces darkvision
+			features.add(new Feature("Superior Darkvision")); // replaces darkvision, dealt with in Race class
 			features.add(new Feature("Sunlight Sensitivity"));
 			break;
 		case 5:

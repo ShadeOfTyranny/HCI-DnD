@@ -75,7 +75,7 @@ public class Race {
 		this.size = size;
 		this.speed = speed;
 		this.statMods = statMods;
-		ArrayList<Feature> features; // will never contain anything, but still needs to exist
+		features = new ArrayList<Feature>(); // will never contain anything, but still needs to exist
 		this.hasSubRace = hasSubRace;
 		this.subRace = subRace;
 	}
@@ -100,7 +100,6 @@ public class Race {
 		statMods[1] = 2;
 		features.add(new Feature("Darkvision"));
 		features.add(new Feature("Fey Ancestry"));
-		features.add(new Feature("Trance"));
 	}
 	private void initHalfling() {
 		name = "Halfling";
@@ -179,7 +178,7 @@ public class Race {
 		for (int i = 0; i < subRace.getFeatures().size(); i++) {
 			features.add(subRace.getFeatures().get(i));
 		}
-		// speed change?
+		// speed change
 		if (subRace.getName().equals("Wood Elf")) {
 			speed = 35;
 		}

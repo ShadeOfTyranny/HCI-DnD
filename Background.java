@@ -4,9 +4,9 @@ package model;
 public class Background {
 	
 	// fields
-	String name; // name of background
-	int skillProf_1, skillProf_2; // two skill proficiencies, int 0-17
-	Feature feature;
+	private String name; // name of background
+	private int skillProf_1, skillProf_2; // two skill proficiencies, int 0-17
+	private Feature feature;
 	
 	// default constructor
 	public Background() {
