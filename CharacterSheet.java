@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import controller.NameListener;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -48,22 +50,21 @@ public class CharacterSheet extends TabPane {
 	private Character character;
 	
 	//all areas that need to send or receive
-	TextField name, name2, name3, level, exp, bg, prof, hpCurrent, tempHp,
-	cArmName, cArmAC, cArmSR, cArmType, cArmProp, init, acMod, spdMod,
+	TextField name, name2, name3, exp, bg, prof, hpCurrent, tempHp, hpMax,
+	armorAC, armorStrReq, armorType, armorProp, init, acMod, spdMod,
 	age, height, weight, eyes, skin, hair, symbol;
-	ArrayList<TextField> stats, money, skillValList, spellSlotsLeft;
+	ArrayList<TextField> stats, money, featureDescrs, skillValList, spellSlotsLeft;
 	ArrayList<ArrayList<ComboBox<String>>> spells;
 	ArrayList<Spell> currentSpells;
 	ArrayList<ArrayList<RadioButton>> spellsChosen;
-	UnfillableTextField armorAC, armorStrReq, armorType, armorProp,
-	ac, spd, hpMax, hitDice, perc, spellClass, spellAbility, spellSav, spellBonus;
+	UnfillableTextField level, ac, spd, hitDice, perc, spellClass, spellAbility, spellSav, spellBonus;
 	ArrayList<UnfillableTextField> statMods, statSav, spellSlots;
 	RadioButton insp;
 	ArrayList<RadioButton> skillButtList, statProfList;
 	ComboBox<String> alignment, charClass, race, subrace, armorName;
-	TextArea lang, pers, ideals, bonds, flaws, allies, otherFeatures, treasure, backstory;
+	TextArea lang, equip, pers, ideals, bonds, flaws, allies, otherFeatures, treasure, backstory;
 	ArrayList<ComboBox<String>> atkNames, features;
-	ArrayList<ArrayList<UnfillableTextField>> atkValues;
+	ArrayList<ArrayList<TextField>> atkValues;
 	ImageView appearance, symbolView;
 	File charImage, symbolImage;
 	FileChooser fileChooser = new FileChooser();
@@ -79,7 +80,7 @@ public class CharacterSheet extends TabPane {
 		//Tab that holds the first page of the character sheet, mainly stats, attacks and inventory
 		Tab tabOne = new Tab();
 		tabOne.setClosable(false);
-		tabOne.setText("Page 1");
+		tabOne.setText("Stats and Combat");
 		ScrollPane scrollOne = new ScrollPane(); //allows for page to scroll if necessary
 		
 		VBox pageOne = new VBox(); //base layout for tabOne
@@ -92,12 +93,12 @@ public class CharacterSheet extends TabPane {
 		Label nameLabel = new Label("Character Name"); 
 		name = new TextField(); 
 		name.setText(character.getName());
+		name.focusedProperty().addListener(new NameListener(character,name.getText()));
 		
 		Label classLabel = new Label("Class");
 		charClass = new ComboBox<String>();
 		ObservableList<String> classList = //lists all classes available
 			    FXCollections.observableArrayList(
-			        "",
 			        "Barbarian",
 			        "Bard",
 			        "Cleric",
@@ -113,20 +114,28 @@ public class CharacterSheet extends TabPane {
 			    );
 		charClass.setItems(classList);
 		charClass.setValue(character.getCharClass().getName());
+		//FUTURE: add dialog box for custom classes
+		//TODO: add listener
 		
 		Label levelLabel = new Label("Level");
-		level = new NumericTextField();
+		level = new UnfillableTextField();
+		level.setUnfillable();
 		level.setText(Integer.toString(character.getLevel()));
 		level.setMaxWidth(40);
+		//FUTURE: leveling up, activate when you want?
 		
 		Label expLabel = new Label("Experience");
 		exp = new NumericTextField();
 		exp.setText(Integer.toString(character.getExperience()));
 		exp.setMaxWidth(60);
+		//TODO: add listener
 		
 		Label bgLabel = new Label("Background");
 		bg = new TextField();
 		bg.setText(character.getBackground().getName());
+		//TODO: non-editable combobox
+		//FUTURE: Add dialog box for custom backgrounds
+		//TODO: add listener
 		
 		Label raceLabel = new Label("Race");
 		race = new ComboBox<String>();
@@ -137,6 +146,8 @@ public class CharacterSheet extends TabPane {
 			    );
 		race.setItems(raceList);
 		race.setValue(character.getRace().getName());
+		//FUTURE: add dialog box for custom races
+		//TODO: add listener
 		
 		Label subraceLabel = new Label("Subrace");
 		subrace = new ComboBox<String>();
@@ -148,6 +159,8 @@ public class CharacterSheet extends TabPane {
 			    );
 		subrace.setItems(subraceList);
 		subrace.setValue(character.getRace().getSubRace().getName());
+		//FUTURE: add dialog box for custom subraces
+		//TODO: add listener
 		
 		Label alignmentLabel = new Label("Alignment");
 		alignment = new ComboBox<String>();
@@ -159,6 +172,8 @@ public class CharacterSheet extends TabPane {
 			    );
 		alignment.setItems(alignmentList);
 		alignment.setValue(character.getAlignment());
+		//FUTURE: maybe custom alignments????
+		//TODO: add listener
 		
 		//Add top section components to layout
 		
@@ -197,6 +212,8 @@ public class CharacterSheet extends TabPane {
 			this.stats.add(stat);
 			stat.setText(Integer.toString(character.getStat(i)));
 			stat.setMaxWidth(40);
+			//TODO: add listener (based on i for stat)
+			//FUTURE: something about three fields instead of two...?
 			Label statModLabel = new Label("Mod");
 			UnfillableTextField statMod = new UnfillableTextField();
 			this.statMods.add(statMod);
@@ -216,6 +233,7 @@ public class CharacterSheet extends TabPane {
 		Label inspLabel = new Label("Inspiration");
 		insp = new RadioButton();
 		insp.setSelected(character.isInspired());
+		//TODO: add listener
 		inspLayout.getChildren().addAll(insp,inspLabel);
 		
 		HBox profLayout = new HBox();
@@ -223,6 +241,7 @@ public class CharacterSheet extends TabPane {
 		prof = new NumericTextField();
 		prof.setMaxWidth(40);
 		prof.setText(Integer.toString(character.getProfBonus()));
+		//TODO: add listener
 		profLayout.getChildren().addAll(prof,profLabel);
 		
 		GridPane savThrows = new GridPane();
@@ -238,6 +257,7 @@ public class CharacterSheet extends TabPane {
 			RadioButton statProf = new RadioButton();
 			statProf.setSelected(character.getStatProf(i));
 			statProfList.add(statProf);
+			//TODO: add listener
 			savThrows.add(statProf,0,i+1);
 		}
 		//values for saving throws
@@ -286,6 +306,7 @@ public class CharacterSheet extends TabPane {
 			RadioButton butt = new RadioButton();
 			butt.setSelected(character.getSkillProf(i));
 			skillButtList.add(butt);
+			//TODO: add listener
 			UnfillableTextField val = new UnfillableTextField();
 			val.setText(Integer.toString(character.getSkill(i)));
 			val.setUnfillable();
@@ -314,6 +335,7 @@ public class CharacterSheet extends TabPane {
 		lang.setText(character.getOtherProfs());
 		lang.setPrefHeight(100);
 		lang.setPrefWidth(150);
+		//TODO: add listener
 		profLang.getChildren().addAll(langLabel,lang);
 		profLang.setAlignment(Pos.CENTER);
 		
@@ -344,38 +366,49 @@ public class CharacterSheet extends TabPane {
 		ac.setText(Integer.toString(character.getArmorClass())); //mod?
 		ac.setUnfillable();
 		ac.setMaxWidth(40);
-		Label acModLabel = new Label("Mod");
+		Label acModLabel = new Label("Buff/Debuff");
 		TextField acMod = new NumericTextField();
-		// TODO: set value
+		acMod.setText(Integer.toString(character.getCustomArmorClass()));
 		acMod.setMaxWidth(40);
+		//TODO: add listener
 		
 		Label initLabel = new Label("Initiative");
 		init = new NumericTextField();
-		// TODO: set value
+		init.setText(Integer.toString(character.getInit()));
 		init.setMaxWidth(40);
+		//TODO: add listener
 		
 		Label spdLabel = new Label("Speed");
 		spd = new UnfillableTextField();
 		spd.setText(Integer.toString(character.getSpeed())); //mod?
 		spd.setUnfillable();
 		spd.setMaxWidth(40);
-		Label spdModLabel = new Label("Mod");
+		Label spdModLabel = new Label("Buff/Debuff");
 		spdMod = new NumericTextField();
-		// TODO: set value
+		spdMod.setText(Integer.toString(character.getCustomSpeed()));
 		spdMod.setMaxWidth(40);
+		//TODO: add listener
 		
 		combatPane.addRow(0,acLabel,acModLabel,initLabel,spdLabel,spdModLabel);
 		combatPane.addRow(1,ac,acMod,init,spd,spdMod);
+		
+		HBox hp = new HBox();
+		hp.setSpacing(2);
 		
 		Label hpLabel = new Label("Current Hit Points");
 		GridPane.setColumnSpan(hpLabel, 2);
 		hpCurrent = new NumericTextField();
 		hpCurrent.setText(Integer.toString(character.getCurrentHP()));
 		hpCurrent.setMaxWidth(40);
-		hpMax = new UnfillableTextField();
-		hpMax.setText("/"+Integer.toString(character.getMaxHP()));
+		//TODO: add listener
+		Label hpSlash = new Label("/");
+		hpMax = new NumericTextField();
+		hpMax.setText(Integer.toString(character.getMaxHP()));
 		hpMax.setMaxWidth(40);
-		hpMax.setUnfillable();
+		//TODO: add listener
+		//FUTURE: make Max HP calculated by model...?
+		hp.getChildren().addAll(hpCurrent,hpSlash,hpMax);
+		GridPane.setColumnSpan(hp,2);
 		
 		Label tempHpLabel = new Label("Temp Hit Points");
 		GridPane.setColumnSpan(tempHpLabel, 2);
@@ -383,6 +416,7 @@ public class CharacterSheet extends TabPane {
 		tempHp.setText(Integer.toString(character.getTempHP()));
 		GridPane.setColumnSpan(tempHp,2);
 		tempHp.setMaxWidth(84);
+		//TODO: add listener
 		
 		Label hitDiceLabel = new Label("Hit Dice");
 		hitDice = new UnfillableTextField();
@@ -391,7 +425,7 @@ public class CharacterSheet extends TabPane {
 		hitDice.setUnfillable();
 		
 		combatPane.addRow(2, hpLabel);
-		combatPane.addRow(3, hpCurrent,hpMax);
+		combatPane.addRow(3, hp);
 		combatPane.add(tempHpLabel,0,4);
 		combatPane.add(tempHp,0,5);
 		combatPane.add(hitDiceLabel,2,4);
@@ -399,6 +433,7 @@ public class CharacterSheet extends TabPane {
 		
 		
 		GridPane attacks = new GridPane();
+		attacks.setAlignment(Pos.CENTER);
 		attacks.setVgap(2);
 		attacks.setHgap(2);
 		
@@ -418,46 +453,27 @@ public class CharacterSheet extends TabPane {
 				);
 		
 		atkNames = new ArrayList<ComboBox<String>>();
-		atkValues = new ArrayList<ArrayList<UnfillableTextField>>();
-		for(int i=0; i<3; i++) { //adds three rows of pre-added attacks to list
+		atkValues = new ArrayList<ArrayList<TextField>>();
+		for(int i=0; i<5; i++) {
 			ComboBox<String> atkBox = new ComboBox<String>(atks);
 			atkBox.setMaxWidth(200);
-			ArrayList<UnfillableTextField> rowFields = new ArrayList<UnfillableTextField>();
+			ArrayList<TextField> rowFields = new ArrayList<TextField>();
 			rowFields.addAll(Arrays.asList(
 					new UnfillableTextField(),
 					new UnfillableTextField(),
 					new UnfillableTextField()
 					));
 			rowFields.get(0).setMaxWidth(40);
-			for(UnfillableTextField field : rowFields) {
-				field.setUnfillable();
-			}
 			atkValues.add(rowFields);
 			atkNames.add(new ComboBox<String>(atks));
 			
 			attacks.addRow(i+2,atkBox,rowFields.get(0),
 					rowFields.get(1),rowFields.get(2));
+			
+
+			//TODO: add button for attacks - removes all attacks, replaces all attacks
+			//TODO: make atkValues update with atkNames - same as Armor, essentially
 		}
-		ArrayList<ArrayList<TextField>> customAtks = new ArrayList<ArrayList<TextField>>();
-		for(int i=0; i<3; i++) { //adds three lines of custom attacks to list
-			ArrayList<TextField> rowFields = new ArrayList<TextField>();
-			rowFields.addAll(Arrays.asList(
-					new TextField(),
-					new TextField(),
-					new TextField(),
-					new TextField()
-					));
-			rowFields.get(1).setMaxWidth(40);
-			for(TextField field : rowFields) {
-				field.setEditable(false);
-			}
-			customAtks.add(rowFields);
-			attacks.addRow(i+6,rowFields.get(0),rowFields.get(1),
-					rowFields.get(2),rowFields.get(3));
-		}
-		
-		// TODO: set attacks
-		// No differentiation between custom/non-custom; figure out a way to make that happen well
 		
 		
 		HBox monAndEqp = new HBox();
@@ -465,7 +481,6 @@ public class CharacterSheet extends TabPane {
 		monAndEqp.setAlignment(Pos.CENTER);
 		VBox money = new VBox();
 		VBox armor = new VBox();
-		VBox customArmor = new VBox();
 		
 		ArrayList<String> moneyLabels = new ArrayList<String>(Arrays.asList(
 				"Copper","Silver","Electrum","Gold","Platinum"
@@ -478,70 +493,63 @@ public class CharacterSheet extends TabPane {
 			moneyField.setText(Integer.toString(character.getMoney(0)));
 			moneyField.setMaxWidth(40);
 			this.money.add(moneyField);
+			//TODO: add listener (use i to figure out which value to update)
 			money.getChildren().addAll(moneyLabel,moneyField);
 		}
 		
 		Label armNameLabel = new Label("Armor");
-		armorName = new ComboBox<String>(FXCollections.observableArrayList(
-			"","Padded","Leather","Studded Leather","Hide","Chain Shirt","Scale Mail",
-			"Breastplate","Half Plate","Ring Mail","Chain mail","Splint","Plate"
-		));
+		ObservableList<String> armorList = FXCollections.observableArrayList(
+				"Padded","Leather","Studded Leather","Hide","Chain Shirt","Scale Mail",
+				"Breastplate","Half Plate","Ring Mail","Chain mail","Splint","Plate"
+			);
+		armorName = new ComboBox<String>(armorList);
+		armorName.setEditable(true);
 		armorName.setValue(character.getArmor().getName());
+		armorName.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				int index = armorName.getSelectionModel().getSelectedIndex();
+				Armor nArmor = new Armor(index);
+				armorAC.setText(Integer.toString(nArmor.getBaseAC()));
+				armorStrReq.setText(Integer.toString(nArmor.getStrReq()));
+				armorType.setText(nArmor.getArmorType());
+				armorProp.setText(nArmor.getProperties());
+			}
+		});
+		
 		
 		Label armACLabel = new Label("AC");
-		armorAC = new UnfillableTextField();
+		armorAC = new TextField();
 		armorAC.setText(Integer.toString(character.getArmor().getBaseAC()));
-		armorAC.setUnfillable();
 		armorAC.setMaxWidth(40);
 		Label armSRLabel = new Label("Str Req");
-		armorStrReq = new UnfillableTextField();
+		armorStrReq = new TextField();
 		armorStrReq.setText(Integer.toString(character.getArmor().getStrReq()));
-		armorStrReq.setUnfillable();
 		armorStrReq.setMaxWidth(40);
 		Label armTypeLabel = new Label("Type");
-		armorType = new UnfillableTextField();
+		armorType = new TextField();
 		armorType.setText(character.getArmor().getArmorType());
-		armorType.setUnfillable();
-		armorType.setMaxWidth(40);
 		Label armPropLabel = new Label("Properties");
-		armorProp = new UnfillableTextField();
+		armorProp = new TextField();
 		armorProp.setText(character.getArmor().getProperties());
-		armorProp.setUnfillable();
-		armorProp.setMaxWidth(40);
-		Button armorSwitch = new Button("Custom Armor");
-		// TODO: ADD LISTENER
+		Button armorButton = new Button("Update Armor");
+		//TODO: add Listener
+		
 		
 		armor.getChildren().addAll(armNameLabel,armorName,armACLabel,armorAC,armSRLabel,
-				armorStrReq,armTypeLabel,armorType,armPropLabel,armorProp,new Label(),armorSwitch);
+				armorStrReq,armTypeLabel,armorType,armPropLabel,armorProp,new Label(),armorButton);
 		armor.setAlignment(Pos.CENTER);
 		
-		Label cArmNameLabel = new Label("Name");
-		Label cArmACLabel = new Label("AC");
-		Label cArmSRLabel = new Label("Str Req");
-		Label cArmTypeLabel = new Label("Type");
-		Label cArmPropLabel = new Label("Properties");
-		cArmName = new TextField();
-		cArmName.setMaxWidth(40);
-		cArmAC = new TextField();
-		cArmAC.setMaxWidth(40);
-		cArmSR = new TextField();
-		cArmSR.setMaxWidth(40);
-		cArmType = new TextField();
-		cArmType.setMaxWidth(40);
-		cArmProp = new TextField();
-		cArmProp.setMaxWidth(40);
-		Button cArmSwitch = new Button("Set Armor");
-		// TODO: ADD LISTENER
-		
-		customArmor.getChildren().addAll(cArmNameLabel,cArmName,cArmACLabel,cArmAC,cArmSRLabel,
-				cArmSR,cArmTypeLabel,cArmType,cArmPropLabel,cArmProp,new Label(),cArmSwitch);
-		customArmor.setAlignment(Pos.CENTER);
+		VBox equipBox = new VBox();
+		Label equipLabel = new Label("Equipment");
+		equip = new TextArea();
+		equip.setMinHeight(100);
+		//TODO: add listener
+		equipBox.getChildren().addAll(equipLabel,equip);
 			
-		monAndEqp.getChildren().addAll(money,armor);
+		monAndEqp.getChildren().addAll(money,armor,equipBox);
 		
-		
-		// TODO: figure out where equipment goes? With armor...?
-		// Add equipment next to armor
 		
 		//Add components to column two
 		
@@ -557,18 +565,23 @@ public class CharacterSheet extends TabPane {
 		pers = new TextArea();
 		pers.setText(character.getPersonality());
 		pers.setPrefHeight(70);
+		//TODO: add listener
 		Label idealsLabel = new Label("Ideals");
 		ideals = new TextArea();
 		ideals.setText(character.getIdeals());
 		ideals.setPrefHeight(70);
+		//TODO: add listener
 		Label bondsLabel = new Label("Bonds");
 		bonds = new TextArea();
 		bonds.setText(character.getBonds());
 		bonds.setPrefHeight(70);
+		//TODO: add listener
 		Label flawsLabel = new Label("Flaws");
 		flaws = new TextArea();
 		flaws.setText(character.getFlaws());
 		flaws.setPrefHeight(70);
+		//TODO: add listener
+		
 		Label featuresLabel = new Label("Features");
 		
 		GridPane featuresPane = new GridPane();
@@ -578,35 +591,23 @@ public class CharacterSheet extends TabPane {
 		Label featureDescrLabel =  new Label("Description");
 		featuresPane.addRow(0,featureNameLabel,featureDescrLabel);
 		ObservableList<String> featureList = FXCollections.observableArrayList(
-				"","Shelter of the Faithful","False Identity","Criminal Contact",
+				"Shelter of the Faithful","False Identity","Criminal Contact",
 				"By Populuar Demand","Rustic Hospitality","Guild Membership","Discovery",
 				"Position by Privilege","Wanderer","Researcher","Ship's Passage","Bad Reputation",
 				"Military Rank","City Secrets"
 			);
 		features = new ArrayList<ComboBox<String>>();
-		ArrayList<UnfillableTextField> featureDescrs = new ArrayList<UnfillableTextField>();
-		for(int i=0; i<3; i++) {
+		featureDescrs = new ArrayList<TextField>();
+		for(int i=0; i<5; i++) {
 			features.add(new ComboBox<String>(featureList));
-			UnfillableTextField tempField = new UnfillableTextField();
-			tempField.setUnfillable();
+			//TODO: add listeners to update fields
+			TextField tempField = new UnfillableTextField();
 			tempField.setMinWidth(325);
 			GridPane.setColumnSpan(tempField, 2);
 			featureDescrs.add(tempField);
 			featuresPane.addRow(i+1,features.get(i),tempField);
 		}
-		ArrayList<TextField> customFeatures = new ArrayList<TextField>();
-		for(int i=0; i<3; i++) {
-			TextField tempFeature = new TextField();
-			TextField tempDescr = new TextField();
-			tempDescr.setMinWidth(325);
-			GridPane.setColumnSpan(tempDescr, 2);
-			customFeatures.add(tempFeature);
-			customFeatures.add(tempDescr);
-			featuresPane.addRow(i+6,tempFeature,tempDescr);
-		}
-		
-		// TODO: set values; how to differentiate between custom/non-custom?
-		
+		//TODO: add button to replace all features in character class
 		
 		//Add components to column three
 		
@@ -633,42 +634,49 @@ public class CharacterSheet extends TabPane {
 		//Tab that holds the second page of the character sheet, mainly bio and other non-gameplay info
 		Tab tabTwo = new Tab();
 		tabTwo.setClosable(false);		
-		tabTwo.setText("Page 2");
+		tabTwo.setText("Appearance, Backstory, and Other");
 		ScrollPane scrollTwo = new ScrollPane(); //allows for page to scroll if necessary
 		
 		Label name2Label = new Label("Character Name");
 		name2 = new TextField();
 		name2.setText(character.getName());
+		//TODO: add listener - same as listener above
 		
 		Label ageLabel = new Label("Age");
 		age = new TextField();
 		age.setText(character.getAge());
 		age.setMaxWidth(80);
+		//TODO: add listener
 		
 		Label eyesLabel = new Label("Eyes");
 		eyes = new TextField();
 		eyes.setText(character.getEyes());
 		eyes.setMaxWidth(80);
+		//TODO: add listener
 		
 		Label heightLabel = new Label("Height");
 		height = new TextField();
 		height.setText(character.getHeight());
 		height.setMaxWidth(80);
+		//TODO: add listener
 		
 		Label skinLabel = new Label("Skin");
 		skin = new TextField();
 		skin.setText(character.getSkin());
 		skin.setMaxWidth(80);
+		//TODO: add listener
 
 		Label weightLabel = new Label("Weight");
 		weight = new TextField();
 		weight.setText(character.getWeight());
 		weight.setMaxWidth(80);
+		//TODO: add listener
 		
 		Label hairLabel = new Label("Hair");
 		hair = new TextField();
 		hair.setText(character.getHair());
 		hair.setMaxWidth(80);
+		//TODO: add listener
 		
 		HBox topRow = new HBox();
 		topRow.getChildren().addAll(name2Label,name2);
@@ -689,9 +697,7 @@ public class CharacterSheet extends TabPane {
 		
 		Label appLabel = new Label("Character Appearance");
 		appearance = new ImageView();
-		//appearance.setImage(character.getAppearance);
-		//option doesn't seem to exist?
-		// TODO: Talk to Eowyn about appearance
+		if(character.getAppearance()!=null) { appearance.setImage(new Image(character.getAppearance().toURI().toString())); }
 		Button appButton = new Button("Choose Image");
 		appButton.setOnAction(
 	            new EventHandler<ActionEvent>() {
@@ -700,10 +706,12 @@ public class CharacterSheet extends TabPane {
 	                    charImage = fileChooser.showOpenDialog(stage);
 	                    if(charImage!=null) {
 	                    	appearance.setImage(new Image(charImage.toURI().toString()));
+	                    	//update model
 	                    }
 	                }
 	            });
-		//TODO: set max size for image?
+
+		//TODO: make above EventHandler a controller object
 		
 		Label backstoryLabel = new Label("Character Backstory");
 		backstory = new TextArea();
@@ -721,17 +729,16 @@ public class CharacterSheet extends TabPane {
 				
 		allies = new TextArea();
 		allies.setText(character.getAlliesOrganizations());
+		//TODO: add listener
 		
 		VBox symbolInfo = new VBox();
 		symbolInfo.setSpacing(5);
 		Label symbolName = new Label("Symbol Name");
 		symbol = new TextField();
-		//symbol.setText(character.getSymbol);
-		//TODO: symbol name in model?
+		symbol.setText(character.getSymbolName());
+		//TODO: add listener
 		symbolView = new ImageView();
-		//symbolView.setImage(character.getSymbol);
-		//option doesn't seem to exist?
-		// TODO: Talk to Eowyn about symbol as well
+		if(character.getSymbol()!=null) { symbolView.setImage(new Image(character.getSymbol().toURI().toString())); }
 		Button symbolButton = new Button("Choose Image");
 		appButton.setOnAction(
 	            new EventHandler<ActionEvent>() {
@@ -743,19 +750,15 @@ public class CharacterSheet extends TabPane {
 	                    }
 	                }
 	            });
-		//TODO: set max size for image?
+		//TODO: make above EventHandler in controller?
 		
 		symbolInfo.getChildren().addAll(symbolName,symbol,symbolView,symbolButton);
 		alliesAndOrgs.getChildren().addAll(allies,symbolInfo);
 		
-//		Label otherFeatLabel = new Label("Additional Features & Traits");
-//		otherFeatures = new TextArea();
-//		otherFeatures.setText(character.getOtherFeatures());
-		//TODO: Ask Eowyn about additional features and traits
-		Label treasureLabel = new Label("Treasure");
-		//TODO: change "Treasure" Label to "Other Equipment"?
+		Label treasureLabel = new Label("Other Equipment");
 		treasure = new TextArea();
-		treasure.setText(character.getMoreEquipment());
+		treasure.setText(""/*character.getMoreEquipment()*/); //TODO: uncomment out method; commented out currently b/c Character isn't most recent version
+		//TODO: add listener
 		secondColumn.getChildren().addAll(alliesAndOrgsLabel,alliesAndOrgs,treasureLabel,treasure);
 		
 		//Add all components to page and tab
@@ -775,7 +778,7 @@ public class CharacterSheet extends TabPane {
 		//Tab that hold the third page of the character sheet, all spell related
 		Tab tabThree = new Tab();
 		tabThree.setClosable(false);
-		tabThree.setText("Page 3");
+		tabThree.setText("Spells");
 		ScrollPane scrollThree = new ScrollPane(); //allows for page to scroll if necessary
 		
 		VBox pageThree = new VBox();
@@ -787,24 +790,28 @@ public class CharacterSheet extends TabPane {
 		Label spellClassLabel = new Label("Spellcasting Class");
 		spellClass = new UnfillableTextField();
 		spellClass.setUnfillable();
+		//TODO: add listener
 		Label spellAbilityLabel = new Label("Spellcasting Ability");
 		GridPane.setHalignment(spellAbilityLabel, HPos.CENTER);
 		spellAbility = new UnfillableTextField();
 		GridPane.setHalignment(spellAbility, HPos.CENTER);
 		spellAbility.setUnfillable();
 		spellAbility.setMaxWidth(80);
+		//TODO: add listener
 		Label spellSavLabel = new Label("Spell Save DC");
 		GridPane.setHalignment(spellSavLabel, HPos.CENTER);
 		spellSav = new UnfillableTextField();
 		GridPane.setHalignment(spellSav, HPos.CENTER);
 		spellSav.setUnfillable();
 		spellSav.setMaxWidth(80);
+		//TODO: add listener
 		Label spellBonusLabel = new Label("Spell Attack Bonus");
 		GridPane.setHalignment(spellBonusLabel, HPos.CENTER);
 		spellBonus = new UnfillableTextField();
 		GridPane.setHalignment(spellBonus, HPos.CENTER);
 		spellBonus.setUnfillable();
 		spellBonus.setMaxWidth(80);
+		//TODO: add listener
 
 		topOfPage.addRow(0,spellClassLabel,spellAbilityLabel,spellSavLabel,spellBonusLabel);
 		topOfPage.addRow(1,spellClass,spellAbility,spellSav,spellBonus);
@@ -812,13 +819,10 @@ public class CharacterSheet extends TabPane {
 		//Only get values if character is a spellcaster
 		if(character.getCharClass().isSpellCaster()) {
 			spellClass.setText(character.getCharClass().getName());
-//			spellAbility.setText(character.getCharClass().?);
-//			spellSav.setText(?);
-//			spellBonus.setText(?);
-			// TODO: where do spellcasting things come from?
+			spellAbility.setText(character.getSpellcastingAbility());
+			spellSav.setText(Integer.toString(character.getSpellSaveDC()));
+			spellBonus.setText(Integer.toString(character.getSpellAttackBonus()));
 		}
-		
-		//TODO: add spell appearances and functionality
 		
 		HBox restOfPage = new HBox();
 		restOfPage.setSpacing(15);
@@ -835,26 +839,29 @@ public class CharacterSheet extends TabPane {
 		spellLevLabel.add(new Label("Level 8"));
 		spellLevLabel.add(new Label("Level 9"));
 		
-		//TODO: populate ComboBox<String> with spell names somehow...?
+		ObservableList<String> spellList = FXCollections.observableArrayList(
+				"Acid Splash"," Aid"," Alarm"," Alter Self"," Animal Friendship"," Animal Messenger","Animal Shapes"," Animate Dead"," Animate Objects"," Antilife Shell"," lAntimagic Field"," Antipathy/Sympathy"," Arcane Eye"," Arcane Gate"," Arcane Lock"," Armor of Agathys"," Arms of Hadar"," Astral Projection"," Augury"," Aura of Life"," Aura of Purity"," Aura of Vitality"," Awaken"," Bane"," Banishing Smite"," Banishment"," Barkskin"," Beacon of Hope"," Beast Sense"," Bestow Curse"," Bigby's Hand"," Blade Barrier"," Blade Ward"," Bless"," Blight"," Blinding Smite"," Blindness/Deafness"," Blink"," Blur"," Branding Smite"," Burning Hands"," Call Lightning"," Calm Emotions"," Chain Lightning"," Charm Person"," Chill Touch"," Chromatic Orb"," Circle of Death"," Circle of Power"," Clairvoyance"," Clone"," Cloud of Daggers"," Cloudkill"," Color Spray"," Command"," Commune"," Commune with Nature"," Compelled Duel"," Comprehend Languages"," Compulsion"," Cone of Cold"," Confusion"," Conjure Animals"," Conjure Barrage"," Conjure Celestial"," Conjure Elemental"," Conjure Fey"," Conjure Minor Elementals"," Conjure Volley"," Conjure Woodland Beings"," Contact Other Plane"," Contagion"," Contingency"," Continual Flame"," Control Water"," Control Weather"," Cordon of Arrows"," Counterspell"," Create Food and Water"," Create or Destroy Water"," Create Undead"," Creation"," Crown of Madness"," Crusader's Mantle"," Cure Wounds"," Dancing Lights"," Darkness"," Darkvision"," Daylight"," Death Ward"," Delayed Blast Fireball"," Demiplane"," Destructive Smite"," Destructive Wave"," Detect Evil and Good"," Detect Magic"," Detect Poison and Disease"," Detect Thoughts"," Dimension Door"," Disguise Self"," Disintegrate"," Dispel Evil and Good"," Dispel Magic"," Dissonant Whispers"," Divination"," Divine Favor"," Divine Word"," Dominate Beast"," Dominate Monster"," Dominate Person"," Drawmij's Instant Summons"," Dream"," Druidcraft"," Earthquake"," Eldritch Blast"," Elemental Weapon"," Enhance Ability"," Enlarge/Reduce"," Ensnaring Strike"," Entangle"," Enthrall"," Etherealness"," Evard's Black Tentacles"," Expeditious Retreat"," Eyebite"," Fabricate"," Faerie Fire"," False Life"," Fear"," Feather Fall"," Feeblemind"," Feign Death"," Find Familiar"," Find Steed"," Find the Path"," Find Traps"," Finger of Death"," Fire Bolt"," Fire Shield"," Fire Storm"," Fireball"," Flame Blade"," Flame Strike"," Flaming Sphere"," Flesh to Stone"," Fly"," Fog Cloud"," Forbiddance"," Forcecage"," Foresight"," Freedom of Movement"," Friends"," Gaseous Form"," Gate"," Geas"," Gentle Repose"," Giant Insect"," Glibness"," Globe of Invulnerability"," Glyph of Warding"," Goodberry"," Grasping Vine"," Grease"," Greater Invisibility"," Greater Restoration"," Guardian of Faith"," Guards and Wards"," Guidance"," Guiding Bolt"," Gust of Wind"," Hail of Thorns"," Hallow"," Hallucinatory Terrain"," Harm"," Haste"," Heal"," Healing Word"," Heat Metal"," Hellish Rebuke"," Heroes' Feast"," Heroism"," Hex"," Hold Monster"," Hold Person"," Holy Aura"," Hunger of Hadar"," Hunter's Mark"," Hypnotic Pattern"," Ice Storm"," Identify"," Illusory Script"," Imprisonment"," Incendiary Cloud"," Inflict Wounds"," Insect Plague"," Invisibility"," Jump"," Knock"," Legend Lore"," Leomund's Secret Chest"," Leomund's Tiny Hut"," Lesser Restoration"," Levitate"," Light"," Lightning Arrow"," Lightning Bolt"," Locate Animals or Plants"," Locate Creature"," Locate Object"," Longstrider"," Mage Armor"," Mage Hand"," Magic Circle"," Magic Jar"," Magic Missile"," Magic Mouth"," Magic Weapon"," Major Image"," Mass Cure Wounds"," Mass Heal"," Mass Healing Word"," Mass Suggestion"," Maze"," Meld into Stone"," Melf's Acid Arrow"," Mending"," Message"," Meteor Swarm"," Mind Blank"," Minor Illusion"," Mirage Arcane"," Mirror Image"," Mislead"," Misty Step"," Modify Memory"," Moonbeam"," Mordenkainen's Faithful Hound"," Mordenkainen's Magnificent Mansion"," Mordenkainen's Private Sanctum"," Mordenkainen's Sword"," Move Earth"," Nondetection"," Nystul's Magic Aura"," Otiluke's Freezing Sphere"," Otiluke's Resilient Sphere"," Otto's Irresistible Dance"," Pass without Trace"," Passwall"," Phantasmal Force"," Phantasmal Killer"," Phantom Steed"," Planar Ally"," Planar Binding"," Plane Shift"," Plant Growth"," Poison Spray"," Polymorph"," Power Word Heal"," Power Word Kill"," Power Word Stun"," Prayer of Healing"," Prestidigitation"," Prismatic Spray"," Prismatic Wall"," Produce Flame"," Programmed Illusion"," Project Image"," Protection from Energy"," Protection from Evil and Good"," Protection from Poison"," Purify Food and Drink"," Raise Dead"," Rary's Telepathic Bond"," Ray of Enfeeblement"," Ray of Frost"," Ray of Sickness"," Regenerate"," Reincarnate"," Remove Curse"," Resistance"," Resurrection"," Reverse Gravity"," Revivify"," Rope Trick"," Sacred Flame"," Sanctuary"," Scorching Ray"," Scrying"," Searing Smite"," See Invisibility"," Seeming"," Sending"," Sequester"," Shapechange"," Shatter"," Shield"," Shield of Faith"," Shillelagh"," Shocking Grasp"," Silence"," Silent Image"," Simulacrum"," Sleep"," Sleet Storm"," Slow"," Spare the Dying"," Speak with Animals"," Speak with Dead"," Speak with Plants"," Spider Climb"," Spike Growth"," Spirit Guardians"," Spiritual Weapon"," Staggering Smite"," Stinking Cloud"," Stone Shape"," Stoneskin"," Storm of Vengeance"," Suggestion"," Sunbeam"," Sunburst"," Swift Quiver"," Symbol"," Tasha's Hideous Laughter"," Telekinesis"," Telepathy"," Teleport"," Teleportation Circle"," Tenser's Floating Disk"," Thaumaturgy"," Thorn Whip"," Thunderous Smite"," Thunderwave"," Time Stop"," Tongues"," Transport via Plants"," Trap the Soul"," Tree Stride"," True Polymorph"," True Resurrection"," True Seeing"," True Strike"," Tsunami"," Unseen Servant"," Vampiric Touch"," Vicious Mockery"," Wall of Fire"," Wall of Force"," Wall of Ice"," Wall of Stone"," Wall of Thorns"," Warding Bond"," Water Breathing"," Water Walk"," Web"," Weird"," Wind Walk"," Wind Wall"," Wish"," Witch Bolt"," Word of Recall"," Wrathful Smite","Zone of Truth"
+		);
 		
 		spells = new ArrayList<ArrayList<ComboBox<String>>>();
-		spellSlots = new ArrayList<UnfillableTextField>();
-		spellSlotsLeft = new ArrayList<TextField>();
+//		spellSlots = new ArrayList<UnfillableTextField>();
+//		spellSlotsLeft = new ArrayList<TextField>();
 		int[] spellNumbers = new int[]{8,12,13,13,13,9,9,9,7,7};
 		for(int i=0; i<10; i++) {
 			spellLevLabel.get(i).setFont(Font.font(spellLevLabel.get(i).getFont().getName(),FontWeight.BOLD,spellLevLabel.get(i).getFont().getSize()));
 			ArrayList<ComboBox<String>> spellLevel = new ArrayList<ComboBox<String>>();
 			spells.add(spellLevel);
-			UnfillableTextField slot = new UnfillableTextField();
-			slot.setUnfillable();
-			slot.setMaxWidth(40);
-			spellSlots.add(slot);
-			TextField slotsLeft = new NumericTextField();
-			slotsLeft.setMaxWidth(40);
-			spellSlotsLeft.add(slotsLeft);
+//			UnfillableTextField slot = new UnfillableTextField();
+//			slot.setUnfillable();
+//			slot.setMaxWidth(40);
+//			spellSlots.add(slot);
+//			TextField slotsLeft = new NumericTextField();
+//			slotsLeft.setMaxWidth(40);
+//			spellSlotsLeft.add(slotsLeft);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
 				ComboBox<String> tempSpellBox = new ComboBox<String>();
+				//FUTURE: make button where user can make custom spells?
 				tempSpellBox.setMinWidth(250);
 				spellLevel.add(tempSpellBox);
 			}
@@ -867,13 +874,13 @@ public class CharacterSheet extends TabPane {
 		VBox restFive = new VBox();
 		for(int i=0; i<2; i++) {
 			restOne.getChildren().add(spellLevLabel.get(i));
-			HBox tempBox = new HBox();
-			tempBox.setSpacing(4);
-			tempBox.getChildren().addAll(
-					new Label("Total Slots:"),spellSlots.get(i),
-					new Label("Slots Left:"),spellSlotsLeft.get(i)
-				);
-			restOne.getChildren().add(tempBox);
+//			HBox tempBox = new HBox();
+//			tempBox.setSpacing(4);
+//			tempBox.getChildren().addAll(
+//					new Label("Total Slots:"),spellSlots.get(i),
+//					new Label("Slots Left:"),spellSlotsLeft.get(i)
+//				);
+//			restOne.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
 				restOne.getChildren().add(spells.get(i).get(j));
@@ -881,13 +888,13 @@ public class CharacterSheet extends TabPane {
 		}
 		for(int i=2; i<4; i++) {
 			restTwo.getChildren().add(spellLevLabel.get(i));
-			HBox tempBox = new HBox();
-			tempBox.setSpacing(4);
-			tempBox.getChildren().addAll(
-					new Label("Total Slots:"),spellSlots.get(i),
-					new Label("Slots Left:"),spellSlotsLeft.get(i)
-				);
-			restTwo.getChildren().add(tempBox);
+//			HBox tempBox = new HBox();
+//			tempBox.setSpacing(4);
+//			tempBox.getChildren().addAll(
+//					new Label("Total Slots:"),spellSlots.get(i),
+//					new Label("Slots Left:"),spellSlotsLeft.get(i)
+//				);
+//			restTwo.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
 				restTwo.getChildren().add(spells.get(i).get(j));
@@ -895,13 +902,13 @@ public class CharacterSheet extends TabPane {
 		}
 		for(int i=4; i<6; i++) {
 			restThree.getChildren().add(spellLevLabel.get(i));
-			HBox tempBox = new HBox();
-			tempBox.setSpacing(4);
-			tempBox.getChildren().addAll(
-					new Label("Total Slots:"),spellSlots.get(i),
-					new Label("Slots Left:"),spellSlotsLeft.get(i)
-				);
-			restThree.getChildren().add(tempBox);
+//			HBox tempBox = new HBox();
+//			tempBox.setSpacing(4);
+//			tempBox.getChildren().addAll(
+//					new Label("Total Slots:"),spellSlots.get(i),
+//					new Label("Slots Left:"),spellSlotsLeft.get(i)
+//				);
+//			restThree.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
 				restThree.getChildren().add(spells.get(i).get(j));
@@ -909,13 +916,13 @@ public class CharacterSheet extends TabPane {
 		}
 		for(int i=6; i<8; i++) {
 			restFour.getChildren().add(spellLevLabel.get(i));
-			HBox tempBox = new HBox();
-			tempBox.setSpacing(4);
-			tempBox.getChildren().addAll(
-					new Label("Total Slots:"),spellSlots.get(i),
-					new Label("Slots Left:"),spellSlotsLeft.get(i)
-				);
-			restFour.getChildren().add(tempBox);
+//			HBox tempBox = new HBox();
+//			tempBox.setSpacing(4);
+//			tempBox.getChildren().addAll(
+//					new Label("Total Slots:"),spellSlots.get(i),
+//					new Label("Slots Left:"),spellSlotsLeft.get(i)
+//				);
+//			restFour.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
 				restFour.getChildren().add(spells.get(i).get(j));
@@ -923,13 +930,13 @@ public class CharacterSheet extends TabPane {
 		}
 		for(int i=8; i<10; i++) {
 			restFive.getChildren().add(spellLevLabel.get(i));
-			HBox tempBox = new HBox();
-			tempBox.setSpacing(4);
-			tempBox.getChildren().addAll(
-					new Label("Total Slots:"),spellSlots.get(i),
-					new Label("Slots Left:"),spellSlotsLeft.get(i)
-				);
-			restFive.getChildren().add(tempBox);
+//			HBox tempBox = new HBox();
+//			tempBox.setSpacing(4);
+//			tempBox.getChildren().addAll(
+//					new Label("Total Slots:"),spellSlots.get(i),
+//					new Label("Slots Left:"),spellSlotsLeft.get(i)
+//				);
+//			restFive.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
 				restFive.getChildren().add(spells.get(i).get(j));
@@ -952,13 +959,14 @@ public class CharacterSheet extends TabPane {
 		this.getTabs().addAll(tabOne,tabTwo,tabThree);
 	}
 	
-	//TODO: TALK TO EOWYN ABOUT METHODS
+	//TODO: Replace with single update method
 	
 	public void updateName() { this.name.setText(character.getName()); }
 	public void updateClass() { this.charClass.setValue(character.getCharClass().getName()); }
 	public void updateLevel() { this.level.setText(Integer.toString(character.getLevel())); }
 	public void updateExp() { this.exp.setText(Integer.toString(character.getExperience())); }
 	public void updateBackground() { this.bg.setText(character.getBackground().getName()); }
+	//FUTURE: removing background - takes boolean, if true removes proficiencies, if false does not
 	public void updateRace() { this.race.setValue(character.getRace().getName()); }
 	public void updateSubrace() { this.subrace.setValue(character.getRace().getSubRace().getName()); }
 	public void updateAlignment() { this.alignment.setValue(character.getAlignment()); }
@@ -1005,9 +1013,9 @@ public class CharacterSheet extends TabPane {
 	//Still not sure; spd mod?
 	public void updateHitDice() { this.hitDice.setText(Integer.toString(character.getCharClass().getHitDie())); }
 	public void updatePerc() { this.perc.setText(Integer.toString(character.getPassiveWisdom())); }
-	// TODO: Features!
-	// TODO: Attacks!
-	// TODO: Ask Eowyn about initiative
+	// Features!
+	// Attacks!
+	// Initiative
 	public void updateMoney() {
 		for(int i=0; i<5; i++) {
 			this.money.get(i).setText(Integer.toString(character.getMoney(i)));
@@ -1024,14 +1032,11 @@ public class CharacterSheet extends TabPane {
 	public void updateSkin() { this.skin.setText(character.getSkin()); }
 	public void updateHair() { this.hair.setText(character.getHair()); }
 	public void updateAppearance() { 
-		//TODO: work with Eowyn/get updated character class
+		
 	}
 	public void updateBackstory() { this.backstory.setText(character.getBackstory()); }
 	public void updateAllies() { this.allies.setText(character.getAlliesOrganizations()); }
-//	public void updateOtherFeatures(String otherFeatures) { this.otherFeatures.setText(character.?); }
-	//TODO: figure out other features?
-	public void updateTreasure() { this.allies.setText(character.getMoreEquipment()); }
-	// TODO: update this to more equipment or treasure depending on which
+	public void updateTreasure() { this.allies.setText(""/*character.getMoreEquipment()*/); }
 	public void updateSpellcasting() {
 		if(character.getCharClass().isSpellCaster()) {
 			//TODO: figure out spellcasting stuff and get update method working
