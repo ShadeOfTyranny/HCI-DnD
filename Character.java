@@ -8,12 +8,11 @@
  */
 
 
-// TODO: update/push button and check updates regularly
-
 package model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Character {
 	
@@ -50,6 +49,7 @@ public class Character {
 	// constructor for new character
 	public Character() {
 		initDefault();
+		notifyL();
 	}
 	
 	
@@ -123,43 +123,49 @@ public class Character {
 	// ArrayList add/remove methods
 	public void addAttack(Attack a) {
 		attacks.add(a);
+		notifyL();
 	}
 	public void removeAttack(int index) {
 		attacks.remove(index);
+		notifyL();
 	}
 	public void addSpell(Spell s) {
 		spells.add(s);
+		notifyL();
 	}
 	public void removeSpell(int index) {
 		spells.remove(index);
+		notifyL();
 	}
 	public void addFeature(Feature f) {
 		features.add(f);
+		notifyL();
 	}
 	public void removeFeature(int index) {
 		features.remove(index);
+		notifyL();
 	}
 	
 	// setters
 	// setters for strings
-	public void setName(String s) { name = s; }
-	public void setAlignment(String s) { alignment = s; }
-	public void setPersonality(String s) { personality = s; }
-	public void setIdeals(String s) { ideals = s; }
-	public void setBonds(String s) { bonds = s; }
-	public void setFlaws(String s) { flaws = s; }
-	public void setEquipment(String s) { equipment = s; }
-	public void setOtherProfs(String s) { otherProfs_languages = s; }
-	public void setEyes(String s) { eyeColor = s; }
-	public void setSkin(String s) { skinColor = s; }
-	public void setHair(String s) { hairColor = s; }
-	public void setBackstory(String s) { backstory = s; }
-	public void setAlliesOrganizations(String s) { alliesOrganizations = s; }
-	public void setMoreEquipment(String s) { moreEquipment = s; }
-	public void setAge(String s) { age = s; }
-	public void setHeight(String s) { height = s; }
-	public void setWeight(String s) { weight = s; }
-	public void setSize(String s) { size = s; }
+	public void setName(String s) { name = s; notifyL();}
+	public void setAlignment(String s) { alignment = s; notifyL();}
+	public void setPersonality(String s) { personality = s; notifyL();}
+	public void setIdeals(String s) { ideals = s; notifyL();}
+	public void setBonds(String s) { bonds = s; notifyL();}
+	public void setFlaws(String s) { flaws = s; notifyL();}
+	public void setEquipment(String s) { equipment = s; notifyL();}
+	public void setOtherProfs(String s) { otherProfs_languages = s; notifyL();}
+	public void setEyes(String s) { eyeColor = s; notifyL();}
+	public void setSkin(String s) { skinColor = s; notifyL();}
+	public void setHair(String s) { hairColor = s; notifyL();}
+	public void setBackstory(String s) { backstory = s; notifyL();}
+	public void setAlliesOrganizations(String s) { alliesOrganizations = s; notifyL();}
+	public void setMoreEquipment(String s) { moreEquipment = s; notifyL();}
+	public void setAge(String s) { age = s; notifyL();}
+	public void setHeight(String s) { height = s; notifyL();}
+	public void setWeight(String s) { weight = s; notifyL();}
+	public void setSize(String s) { size = s; notifyL();}
 	// setters for special classes
 	public void setCharClass(CharClass c) {
 		this.charClass = c;
@@ -168,11 +174,13 @@ public class Character {
 		for (int i = 0; i < 6; i++) {
 			if (this.charClass.getProfs()[i]) this.statProfs[i] = true;
 		}
+		notifyL();
 	}
 	// should take a boolean the way that removeBackground does
 	public void removeCharClass() {
 		// not actually going to remove anything for this iteration
 		this.charClass = new CharClass();
+		notifyL();
 	}
 	public void changeCharClass(CharClass c) {
 		removeCharClass();
@@ -190,6 +198,7 @@ public class Character {
 		/**for (int i = 0; i < race.getFeatures().size(); i ++) {
 			features.add(race.getFeatures().get(i));
 		}*/
+		notifyL();
 	}
 	public void removeRace() {
 		//Race r = race;
@@ -209,6 +218,7 @@ public class Character {
 				}
 			}
 		}*/
+		notifyL();
 	}
 	public void changeRace(Race r) {
 		removeRace();
@@ -219,6 +229,7 @@ public class Character {
 		skillProfs[b.getSkill1()] = true;
 		skillProfs[b.getSkill2()] = true;
 		//features.add(b.getFeature());
+		notifyL();
 	}
 	
 	// boolean allows user to decide if they want the proficiencies replaced
@@ -235,10 +246,12 @@ public class Character {
 				break; // since there should only be one instance of said feature
 			}
 		}*/
+		notifyL();
 	}
 	public void setArmor(Armor a) {
 		armor = a;
-		calculateAC();
+		//calculateAC();
+		notifyL();
 	}
 	// if no armor: AC = 10 + dex mod
 	// if shield: AC += 2
@@ -259,24 +272,25 @@ public class Character {
 		}
 	}
 	// setters for int and boolean arrays
-	public void setStat(int stat, int value) { stats[stat] = value; }
-	public void setStatSave(int stat, int value) { savingThrows[stat] = value; }
-	public void setSkill(int skill, int value) { skills[skill] = value; }
-	public void setMoney(int money, int value) { monies[money] = value; }
-	public void setStatProf(int stat, boolean value) { statProfs[stat] = value; }
-	public void setSkillProf(int skill, boolean value) { skillProfs[skill] = value; }
-	public void setCustomStat(int stat, int value) { customStats[stat] = value; }
-	public void setCustomSkill(int skill, int value) { customSkills[skill] = value; }
-	public void setCustomSavingThrows(int stat, int value) { customSavingThrows[stat] = value; }
+	public void setStat(int stat, int value) { stats[stat] = value; notifyL();}
+	public void setStatSave(int stat, int value) { savingThrows[stat] = value; notifyL();}
+	public void setSkill(int skill, int value) { skills[skill] = value; notifyL();}
+	public void setMoney(int money, int value) { monies[money] = value; notifyL();}
+	public void setStatProf(int stat, boolean value) { statProfs[stat] = value; notifyL();}
+	public void setSkillProf(int skill, boolean value) { skillProfs[skill] = value; notifyL();}
+	public void setCustomStat(int stat, int value) { customStats[stat] = value; notifyL();}
+	public void setCustomSkill(int skill, int value) { customSkills[skill] = value; notifyL();}
+	public void setCustomSavingThrows(int stat, int value) { customSavingThrows[stat] = value; notifyL();}
 	// setters for booleans
-	public void setInspired(boolean value) { inspired = value; }
-	public void setSpellCaster(boolean value) { spellCaster = value; }
-	public void setMulticlass(boolean value) { multiclass = value; }
+	public void setInspired(boolean value) { inspired = value; notifyL();}
+	public void setSpellCaster(boolean value) { spellCaster = value; notifyL();}
+	public void setMulticlass(boolean value) { multiclass = value; notifyL();}
 	// setters for ints
 	public void setExperience(int x) { 
 		experience = x;
 		checkLevel();
-		}
+		notifyL();
+	}
 	// to see if a level up is necessary
 	private void checkLevel() {
 		int levelGoal; // what the level should be based on experience
@@ -355,17 +369,18 @@ public class Character {
 		level++;
 		charClass.levelUp();
 		// hitdice would be affected, but since the player might roll, that can't be done automatically
+		notifyL();
 	}
-	public void setArmorClass(int x) { armorClass = x; }
-	public void setSpeed(int x) { speed = x; }
-	public void setProfBonus(int x) { profBonus = x; }
-	public void setMaxHP(int x) { maxHP = x; }
-	public void setTempHP(int x) { tempHP = x; }
-	public void setCurrentHP(int x) { currentHP = x; }
-	public void setCustomArmorClass(int x) { customArmorClass = x; }
-	public void setCustomSpeed(int x) { customSpeed = x; }
-	public void setCustomProfBonus(int x) {customProfBonus = x; }
-	public void setCustomWisdom(int x) { customWisdom = x; }
+	public void setArmorClass(int x) { armorClass = x; notifyL();}
+	public void setSpeed(int x) { speed = x; notifyL();}
+	public void setProfBonus(int x) { profBonus = x; notifyL();}
+	public void setMaxHP(int x) { maxHP = x; notifyL();}
+	public void setTempHP(int x) { tempHP = x; notifyL();}
+	public void setCurrentHP(int x) { currentHP = x; notifyL();}
+	public void setCustomArmorClass(int x) { customArmorClass = x; notifyL();}
+	public void setCustomSpeed(int x) { customSpeed = x; notifyL();}
+	public void setCustomProfBonus(int x) {customProfBonus = x; notifyL();}
+	public void setCustomWisdom(int x) { customWisdom = x; notifyL();}
 	
 	
 	// getters
@@ -449,23 +464,36 @@ public class Character {
 	public double getGoldTotal() { return (.01 * monies[0]) + (.1 * monies[1]) + (.5 * monies[2]) + monies[3] + (10 * monies[4]); }
 	
 	public int getInit() { return init; }
-	public void setInit(int i) { init = i; }
+	public void setInit(int i) { init = i; notifyL();}
 	
 	public File getAppearance() { return appearance; }
-	public void setAppearance(File f) { appearance = f; }
+	public void setAppearance(File f) { appearance = f; notifyL();}
 	
 	public File getSymbol() { return symbol; }
-	public void setSymbol(File f) { symbol = f; }
+	public void setSymbol(File f) { symbol = f; notifyL();}
 	
 	public String getSpellcastingAbility() { return spellcastingAbility; }
-	public void setSpellcastingAbility(String s) { spellcastingAbility = s; }
+	public void setSpellcastingAbility(String s) { spellcastingAbility = s; notifyL();}
 	
 	public int getSpellSaveDC() { return spellSaveDC; }
-	public void setSpellSaveDC(int i) { spellSaveDC = i; }
+	public void setSpellSaveDC(int i) { spellSaveDC = i; notifyL();}
 	
 	public int getSpellAttackBonus() { return spellAttackBonus; }
-	public void setSpellAttackBonus(int i) { spellAttackBonus = i; }
+	public void setSpellAttackBonus(int i) { spellAttackBonus = i; notifyL();}
 	
 	public String getSymbolName() { return symbolName; }
-	public void setSymbolName(String s) { symbolName = s; }
+	public void setSymbolName(String s) { symbolName = s; notifyL();}
+	
+	// listener implementation
+	private List<Listener> listeners = new ArrayList<Listener>();
+		
+	public void addListener(Listener listener) {
+		listeners.add(listener);
+	}
+		
+	private void notifyL() {
+		for (Listener listener : listeners ) {
+			listener.updated();
+		}
+	}
 }
