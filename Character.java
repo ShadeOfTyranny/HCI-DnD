@@ -4,6 +4,7 @@
  * In checkLevel there is the potential for levelGoal to be less than level. In future iterations, something will have to be done about that.
  * In future iterations, levelUP will not simply call levelUp, but will send a notification to the player who can then choose to level up when they desire
  * In future iterations, CharClass's setPath should have a list of options from the book to prevent mistakes
+ * In future iterations, removeCharClass will take a boolean the same way that removeBackground does
  */
 
 
@@ -19,7 +20,7 @@ public class Character {
 	// fields
 	
 	// player input Strings = have no affect on calculations
-	private String name, alignment, personality, ideals, bonds, flaws, equipment, otherProfs_languages, eyeColor, skinColor, hairColor, backstory, alliesOrganizations, charBackground, age, height, 
+	private String name, alignment, personality, ideals, bonds, flaws, equipment, otherProfs_languages, eyeColor, skinColor, hairColor, backstory, alliesOrganizations, moreEquipment, age, height, 
 	weight, size, symbolName, spellcastingAbility;
 	// special classes
 	private CharClass charClass;
@@ -41,7 +42,7 @@ public class Character {
 	// integers
 	private int level, experience, armorClass, speed, profBonus, maxHP, currentHP, tempHP, init, spellSaveDC, spellAttackBonus;
 	// integers for any custom modifications
-	private int customArmorClass, customSpeed, customProfBonus, customMaxHP, customWisdom;
+	private int customArmorClass, customSpeed, customProfBonus, customWisdom;
 	// imported files
 	private File appearance;
 	private File symbol;
@@ -51,21 +52,8 @@ public class Character {
 		initDefault();
 	}
 	
-	// construct from a save file
-	public Character(String s) {
-		initDefault();
-		// TODO
-		
-		
-		
-	}
 	
-	public String save() {
-		String s = "";
-		//TODO
-		
-		return s;
-	}
+	
 	
 	// initializes all values to default
 	private void initDefault() {
@@ -83,7 +71,7 @@ public class Character {
 		skinColor = "";
 		backstory = "";
 		alliesOrganizations = "";
-		charBackground = "";
+		moreEquipment = "";
 		age = "";
 		height = "";
 		weight = "";
@@ -126,7 +114,6 @@ public class Character {
 		customArmorClass = 0;
 		customSpeed = 0;
 		customProfBonus = 0;
-		customMaxHP = 0;
 		customWisdom = 0;
 		init = 0;
 		spellSaveDC = 0;
@@ -168,7 +155,7 @@ public class Character {
 	public void setHair(String s) { hairColor = s; }
 	public void setBackstory(String s) { backstory = s; }
 	public void setAlliesOrganizations(String s) { alliesOrganizations = s; }
-	public void setCharBackground(String s) { charBackground = s; }
+	public void setMoreEquipment(String s) { moreEquipment = s; }
 	public void setAge(String s) { age = s; }
 	public void setHeight(String s) { height = s; }
 	public void setWeight(String s) { weight = s; }
@@ -176,10 +163,16 @@ public class Character {
 	// setters for special classes
 	public void setCharClass(CharClass c) {
 		this.charClass = c;
-		// TODO: implement
+		if (this.charClass.isSpellCaster()) spellCaster = true;
+		// saving throw proficiencies
+		for (int i = 0; i < 6; i++) {
+			if (this.charClass.getProfs()[i]) this.statProfs[i] = true;
+		}
 	}
+	// should take a boolean the way that removeBackground does
 	public void removeCharClass() {
-		//TODO
+		// not actually going to remove anything for this iteration
+		this.charClass = new CharClass();
 	}
 	public void changeCharClass(CharClass c) {
 		removeCharClass();
@@ -194,9 +187,9 @@ public class Character {
 			stats[i] += race.getStatMods()[i];
 		}
 		// features
-		for (int i = 0; i < race.getFeatures().size(); i ++) {
+		/**for (int i = 0; i < race.getFeatures().size(); i ++) {
 			features.add(race.getFeatures().get(i));
-		}
+		}*/
 	}
 	public void removeRace() {
 		//Race r = race;
@@ -208,14 +201,14 @@ public class Character {
 			stats[i] -= race.getStatMods()[i];
 		}
 		// features
-		for (int i = 0; i < race.getFeatures().size(); i++) {
+		/**for (int i = 0; i < race.getFeatures().size(); i++) {
 			for (int j = 0; j < features.size(); j++) {
 				if (features.get(j).equals(race.getFeatures().get(i).getName())) {
 					features.remove(j);
 					j--;
 				}
 			}
-		}
+		}*/
 	}
 	public void changeRace(Race r) {
 		removeRace();
@@ -225,7 +218,7 @@ public class Character {
 		background = b;
 		skillProfs[b.getSkill1()] = true;
 		skillProfs[b.getSkill2()] = true;
-		features.add(b.getFeature());
+		//features.add(b.getFeature());
 	}
 	
 	// boolean allows user to decide if they want the proficiencies replaced
@@ -236,12 +229,12 @@ public class Character {
 			skillProfs[background.getSkill2()] = false;
 		}
 		
-		for (int i = 0; i < features.size(); i++) {
+		/**for (int i = 0; i < features.size(); i++) {
 			if (features.get(i).equals(background.getFeature().getName())) {
 				features.remove(i);
 				break; // since there should only be one instance of said feature
 			}
-		}
+		}*/
 	}
 	public void setArmor(Armor a) {
 		armor = a;
@@ -361,7 +354,7 @@ public class Character {
 	public void levelUp() {
 		level++;
 		charClass.levelUp();
-		//TODO change variables that are affected by the previous statement
+		// hitdice would be affected, but since the player might roll, that can't be done automatically
 	}
 	public void setArmorClass(int x) { armorClass = x; }
 	public void setSpeed(int x) { speed = x; }
@@ -372,7 +365,6 @@ public class Character {
 	public void setCustomArmorClass(int x) { customArmorClass = x; }
 	public void setCustomSpeed(int x) { customSpeed = x; }
 	public void setCustomProfBonus(int x) {customProfBonus = x; }
-	public void setCustomMaxHP(int x) { customMaxHP = x; }
 	public void setCustomWisdom(int x) { customWisdom = x; }
 	
 	
@@ -391,7 +383,7 @@ public class Character {
 	public String getHair() { return hairColor; }
 	public String getBackstory() { return backstory; }
 	public String getAlliesOrganizations() { return alliesOrganizations; }
-	public String getCharBackground() { return charBackground; }
+	public String getMoreEquipment() { return moreEquipment; }
 	public String getAge() { return age; }
 	public String getHeight() { return height; }
 	public String getWeight() { return weight; }
@@ -439,8 +431,7 @@ public class Character {
 	}
 	public int getProfBonus() { return profBonus + customProfBonus; }
 	public int getCustomProfBonus() { return customProfBonus; }
-	public int getMaxHP() { return maxHP + customMaxHP; }
-	public int getCustomMaxHP() { return customMaxHP; }
+	public int getMaxHP() { return maxHP; }
 	public int getCurrentHP() { return currentHP; }
 	public int getTempHP() { return tempHP; }
 	// not stored
