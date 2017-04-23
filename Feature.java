@@ -23,10 +23,9 @@ public class Feature {
 	}
 	
 	// for features with multiple versions
-	public Feature(String s, int i) {
+	/**public Feature(String s, int i) {
 		name = s;
 		switch (name) {
-		// TODO: switch these to normal features
 		case "Draconic Ancestry":
 			ancestry(i);
 			break;
@@ -46,7 +45,7 @@ public class Feature {
 			break;
 		}
 		custom = false;
-	}
+	}*/
 	
 	
 	// custom feature
@@ -220,6 +219,9 @@ public class Feature {
 			description = "You have advantage on saving throws against poison, and you have resistance against poison damage.";
 			break;
 			// dragonborn features
+		case "Draconic Ancestry":
+			description = "";
+			break;
 		case "Breath Weapon":
 			description = "You can use your action to exhale destructive energy. Your draconic ancestry determines the size, shape, and damage type of the exhalation.\n"
 					+ "When you use your breath weapon, each creature in the area of the exhalation must make a saving throw, "
@@ -272,6 +274,12 @@ public class Feature {
 			description = "You have resistance to fire damage.";
 			break;
 			// barbarian features
+		case "Rage":
+			description = "";
+			break;
+		case "Brutal Critical":
+			description = "";
+			break;
 		case "Reckless Attack":
 			description = "You can throw aside all concern for defense to attack with fierce desperation. When you make your first attack on your turn, you can decide "
 					+ "to attack recklessly. Doing so gives you advantage on melee weapon attack rolls using Strength during this "
@@ -373,6 +381,12 @@ public class Feature {
 					+ "when you hit it with melee weapon attack.";
 			break;
 			// bard features
+		case "Bardic Inspiration":
+			description = "";
+			break;
+		case "Song of Rest":
+			description = "";
+			break;
 		case "Jack of All Trades":
 			description = "You can add half your proficiency bonus, rounded down, to any ability check you make that doesn’t already include your proficiency bonus.";
 			break;
@@ -1308,7 +1322,7 @@ public class Feature {
 	}
 	
 	// black, blue, brass, bronze, copper, gold, green, red, silver, white
-	private void ancestry(int c) {
+	/**private void ancestry(int c) {
 		String color = "";
 		String damage = "";
 		String breath = "";
@@ -1479,6 +1493,6 @@ public class Feature {
 		description = "Beginning at 2nd level, you can use soothing music or oration to help revitalize your wounded allies during "
 				+ "a short rest. If you or any friendly creatures who can hear your perform ance regain hit points at the end of "
 				+ "the short rest, each of those creatures regains an extra 1d" + die + " hit points.";
-	}
+	}*/
 	
 }

@@ -3,6 +3,7 @@
  * Multiclassing and spellcasting are not implemented for this iteration.
  * In checkLevel there is the potential for levelGoal to be less than level. In future iterations, something will have to be done about that.
  * In future iterations, levelUP will not simply call levelUp, but will send a notification to the player who can then choose to level up when they desire
+ * In future iterations, CharClass's setPath should have a list of options from the book to prevent mistakes
  */
 
 
@@ -226,13 +227,15 @@ public class Character {
 		skillProfs[b.getSkill2()] = true;
 		features.add(b.getFeature());
 	}
+	
+	// boolean allows user to decide if they want the proficiencies replaced
 	public void removeBackground(boolean removeProfs) {
 		background = new Background();
-		// TODO
-		// this could be problematic, since proficiencies might be provided elsewhere
-		// maybe there should be a dialogue for the user to decide
-		skillProfs[background.getSkill1()] = false;
-		skillProfs[background.getSkill2()] = false;
+		if (removeProfs) {
+			skillProfs[background.getSkill1()] = false;
+			skillProfs[background.getSkill2()] = false;
+		}
+		
 		for (int i = 0; i < features.size(); i++) {
 			if (features.get(i).equals(background.getFeature().getName())) {
 				features.remove(i);
@@ -358,7 +361,7 @@ public class Character {
 	public void levelUp() {
 		level++;
 		charClass.levelUp();
-		//TODO
+		//TODO change variables that are affected by the previous statement
 	}
 	public void setArmorClass(int x) { armorClass = x; }
 	public void setSpeed(int x) { speed = x; }
