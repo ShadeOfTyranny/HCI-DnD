@@ -1,10 +1,15 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 // default options: dwarf, elf, halfling, human, dragonborn, gnome, half-elf, half-orc, tiefling
-public class Race {
+public class Race implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	private String name, size;
 	private int speed; // base walking speed in feet
@@ -175,13 +180,26 @@ public class Race {
 		if (subRace.getName().equals("Dark Elf (Drow)")) {
 			if (features.get(0).getName().equals("Darkvision")) features.remove(0);
 		}
-		for (int i = 0; i < subRace.getFeatures().size(); i++) {
+		for (int i = 0; i < subRace.getFeatures().size();) {
 			features.add(subRace.getFeatures().get(i));
+			subRace.removeFeature(i);
 		}
 		// speed change
 		if (subRace.getName().equals("Wood Elf")) {
 			speed = 35;
 		}
+	}
+	
+	public void removeFeature(String name) {
+		for (int i = 0; i < features.size(); i++) {
+			if (features.get(i).equals(name)) {
+				features.remove(i);
+				break;
+			}
+		}
+	}
+	public void removeFeatures() {
+		features = new ArrayList<Feature>();
 	}
 	
 

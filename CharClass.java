@@ -1,10 +1,15 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 // default options: Barbarian, Bard, Cleric, Druid, Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard
-public class CharClass {
+public class CharClass implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	private String name; // name of class
 	private String path;
@@ -82,6 +87,18 @@ public class CharClass {
 		else this.name = name;
 		this.hitDie = hitDie;
 		this.level = level;
+	}
+	
+	public void removeFeature(String name) {
+		for (int i = 0; i < features.size(); i++) {
+			if (features.get(i).equals(name)) {
+				features.remove(i);
+				break;
+			}
+		}
+	}
+	public void removeFeatures() {
+		features = new ArrayList<Feature>();
 	}
 	
 	// initializes different classes

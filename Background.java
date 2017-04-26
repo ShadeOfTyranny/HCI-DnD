@@ -1,8 +1,14 @@
 package model;
 
+import java.io.Serializable;
+
 // default options: acolyte, charlatan, criminal, entertainer, folk hero, guild artisan, hermit, noble, outlander, sage, sailor, soldier, urchin, custom
-public class Background {
+public class Background implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	private String name; // name of background
 	private int skillProf_1, skillProf_2; // two skill proficiencies, int 0-17
@@ -63,6 +69,14 @@ public class Background {
 		if (x < 13) {
 			//feature = new Feature(0, x);
 		}
+	}
+	
+	public void removeFeature(String name) {
+		if (feature.equals(name)) feature = new Feature();
+	}
+	
+	public void removeFeature() {
+		feature = new Feature();
 	}
 	
 	// custom constructor

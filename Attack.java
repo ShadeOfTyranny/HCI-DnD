@@ -1,7 +1,13 @@
 package model;
 
-public class Attack {
+import java.io.Serializable;
+
+public class Attack implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	int numDice, typeDice; // damage
 	String damageType, name, properties;

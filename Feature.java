@@ -1,7 +1,13 @@
 package model;
 
-public class Feature {
+import java.io.Serializable;
+
+public class Feature implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	private String name, description;
 	private boolean custom; // is this even necessary?

@@ -1,6 +1,12 @@
 package model;
 
-public class Armor {
+import java.io.Serializable;
+
+public class Armor implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	private int baseAC, strReq;
 	private String armorType; // light, medium, heavy

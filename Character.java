@@ -11,11 +11,16 @@
 package model;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Character {
+public class Character implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	
 	// player input Strings = have no affect on calculations
@@ -141,9 +146,41 @@ public class Character {
 		features.add(f);
 		notifyL();
 	}
-	public void removeFeature(int index) {
+	/**public void removeFeature(int index) {
 		features.remove(index);
 		notifyL();
+	}*/
+	public void removeFeature(String name) {
+		for (int i = 0; i < features.size(); i++) {
+			if (features.get(i).equals(name)) {
+				features.remove(i);
+				break;
+			}
+		}
+		race.removeFeature(name);
+		background.removeFeature(name);
+		charClass.removeFeature(name);
+		notifyL();
+	}
+	public void removeFeatures() {
+		features = new ArrayList<Feature>();
+		race.removeFeatures();
+		background.removeFeature();
+		charClass.removeFeatures();
+		notifyL();
+	}
+	
+	public void removeSpells() {
+		spells = new ArrayList<Spell>();
+		notifyL();
+	}
+	public void removeAttacks() {
+		attacks = new ArrayList<Attack>();
+		notifyL();
+	}
+	
+	public void removeArmor() {
+		armor = new Armor();
 	}
 	
 	// setters

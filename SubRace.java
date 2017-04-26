@@ -1,9 +1,14 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SubRace {
+public class SubRace implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	String name;
 	int[] statMods;
@@ -77,6 +82,10 @@ public class SubRace {
 		this();
 		this.name = name;
 		this.statMods = statMods;
+	}
+	
+	public void removeFeature(int i) {
+		features.remove(i);
 	}
 	
 	// getters

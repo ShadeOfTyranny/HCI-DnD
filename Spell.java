@@ -1,7 +1,13 @@
 package model;
 
-public class Spell {
+import java.io.Serializable;
+
+public class Spell implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// fields
 	String name, castTime, range, components, duration, description;
 	int level;
@@ -1255,7 +1261,6 @@ public class Spell {
 					+ "At Higher Levels. When you cast this spell with a 9th-level spell slot, the duration is concentration, up to 8 hours.";
 			setSpell("1ac", "60 feet", "V, S", "con1h", 8, false);
 			break;
-			//TODO:
 		case "Dominate Person":
 			description = "You attempt to beguile a humanoid that you can see within range. It must succeed on a wisdom saving "
 					+ "throw or be charmed by you for the duration. If you or creatures that are friendly to you are fighting it, it has advantage on the saving throw. \n \n"
