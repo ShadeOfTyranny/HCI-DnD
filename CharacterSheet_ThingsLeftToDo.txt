@@ -1,47 +1,47 @@
-Name listener : TextField
-Class listener : ComboBox<String>
-Exp listener : TextField
-[Making Background a ComboBox]
-[Background listener]
-Race listener : ComboBox<String>
-Subrace listener : ComboBox<String>
-Alignment listener : ComboBox<String>
-Stat listener : TextField
-Inspiration listener : RadioButton
-Proficiency Bonus listener : TextField
-StatProficiencies listener : RadioButton
-SkillProficiencies listener : RadioButton
-OtherProfLang listener : TextArea
-AC Mod listener : TextField
-Initiative listener : TextField
-Speed Mod listener : TextField
-HPCurrent listener : TextField
-HPMax listener : TextField
-TempHP listener : TextField
-[Fixing Attacks ComboBox]
-[Attacks listener]
-Money listener : TextField
-[Armor listener]
-Equipment listener : TextArea
-Personality listener : TextArea
-Ideals listener : TextArea
-Bonds listener : TextArea
-Flaws listener : TextArea
-[fix Features ComboBox]
-[Features listener]
+X Name listener : TextField
+ Class listener : ComboBox<String>
+ Exp listener : TextField
+X [Making Background a ComboBox]
+X [Background listener]
+ Race listener : ComboBox<String>
+ Subrace listener : ComboBox<String>
+ Alignment listener : ComboBox<String>
+ Stat listener : TextField
+ Inspiration listener : RadioButton
+ Proficiency Bonus listener : TextField
+ StatProficiencies listener : RadioButton
+ SkillProficiencies listener : RadioButton
+ OtherProfLang listener : TextArea
+ AC Mod listener : TextField
+ Initiative listener : TextField
+ Speed Mod listener : TextField
+ HPCurrent listener : TextField
+ HPMax listener : TextField
+ TempHP listener : TextField
+X [Fixing Attacks ComboBox]
+X [Attacks listener] 
+ Money listener : TextField
+X [Armor listener]
+ Equipment listener : TextArea
+ Personality listener : TextArea
+ Ideals listener : TextArea
+ Bonds listener : TextArea
+ Flaws listener : TextArea
+X [fix Features ComboBox]
+X [Features listener]
 
-(((Name2 listener : same as above)))
-Age listener : TextField
-Eyes listener : TextField
-Height listener : TextField
-Skin listener : TextField
-Weight listener : TextField
-Hair listener : TextField
-[Appearance listener]
-Backstory listener : TextArea
-Allies/Org listener : TextArea
-Symbol listener : TextField
-[Symbol Image listener]
-Treasure/OtherEquipment listener : TextArea
-[Make spells work]
-[Spells listener]
+ (((Name2 listener : same as above)))
+ Age listener : TextField
+ Eyes listener : TextField
+ Height listener : TextField
+ Skin listener : TextField 
+ Weight listener : TextField
+ Hair listener : TextField
+X [Appearance listener]
+ Backstory listener : TextArea
+ Allies/Org listener : TextArea
+ Symbol listener : TextField
+X [Symbol Image listener]
+ Treasure/OtherEquipment listener :  TextArea
+X [Make spells work]
+X [Spells listener]

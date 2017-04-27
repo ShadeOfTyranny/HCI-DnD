@@ -1,17 +1,15 @@
 package view;
 
-import model.Armor;
-import model.Character;
-import model.Spell;
-
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import controller.ArmorListener;
+import controller.AttackListener;
+import controller.BackgroundListener;
+import controller.FeatureListener;
 import controller.NameListener;
-import javafx.beans.value.ChangeListener;
+import controller.SpellListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,9 +29,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -42,15 +38,25 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.Armor;
+import model.Attack;
+import model.Background;
+import model.Character;
+import model.Feature;
+import model.Listener;
+import model.Spell;
 
-public class CharacterSheet extends TabPane {
+public class CharacterSheet extends TabPane implements Listener {
 
 	private Stage stage;
 	
 	private Character character;
 	
+	private int autoFeatures; //number of features from Class/Race/Background
+	private ArrayList<String> oldFeatureNames;
+	
 	//all areas that need to send or receive
-	TextField name, name2, name3, exp, bg, prof, hpCurrent, tempHp, hpMax,
+	TextField name, name2, exp, prof, hpCurrent, tempHp, hpMax,
 	armorAC, armorStrReq, armorType, armorProp, init, acMod, spdMod,
 	age, height, weight, eyes, skin, hair, symbol;
 	ArrayList<TextField> stats, money, featureDescrs, skillValList, spellSlotsLeft;
@@ -61,7 +67,7 @@ public class CharacterSheet extends TabPane {
 	ArrayList<UnfillableTextField> statMods, statSav, spellSlots;
 	RadioButton insp;
 	ArrayList<RadioButton> skillButtList, statProfList;
-	ComboBox<String> alignment, charClass, race, subrace, armorName;
+	ComboBox<String> bg, alignment, charClass, race, subrace, armorName;
 	TextArea lang, equip, pers, ideals, bonds, flaws, allies, otherFeatures, treasure, backstory;
 	ArrayList<ComboBox<String>> atkNames, features;
 	ArrayList<ArrayList<TextField>> atkValues;
@@ -131,11 +137,24 @@ public class CharacterSheet extends TabPane {
 		//TODO: add listener
 		
 		Label bgLabel = new Label("Background");
-		bg = new TextField();
-		bg.setText(character.getBackground().getName());
-		//TODO: non-editable combobox
+		bg = new ComboBox<String>(FXCollections.observableArrayList(
+				"Acolyte",
+				"Charlatan",
+				"Criminal",
+				"Entertainer",
+				"Folk Hero",
+				"Guild Artisan",
+				"Hermit",
+				"Noble",
+				"Outlander",
+				"Sage",
+				"Sailor",
+				"Soldier",
+				"Urchin"
+				));
+		bg.setValue(character.getBackground().getName());
 		//FUTURE: Add dialog box for custom backgrounds
-		//TODO: add listener
+		bg.focusedProperty().addListener(new BackgroundListener(character,bg.getSelectionModel().getSelectedIndex()));
 		
 		Label raceLabel = new Label("Race");
 		race = new ComboBox<String>();
@@ -164,6 +183,7 @@ public class CharacterSheet extends TabPane {
 		
 		Label alignmentLabel = new Label("Alignment");
 		alignment = new ComboBox<String>();
+		alignment.setEditable(true);
 		ObservableList<String> alignmentList = //lists all classes available
 			    FXCollections.observableArrayList(
 			        "Lawful Good","Lawful Neutral","Lawful Evil",
@@ -172,7 +192,6 @@ public class CharacterSheet extends TabPane {
 			    );
 		alignment.setItems(alignmentList);
 		alignment.setValue(character.getAlignment());
-		//FUTURE: maybe custom alignments????
 		//TODO: add listener
 		
 		//Add top section components to layout
@@ -367,7 +386,7 @@ public class CharacterSheet extends TabPane {
 		ac.setUnfillable();
 		ac.setMaxWidth(40);
 		Label acModLabel = new Label("Buff/Debuff");
-		TextField acMod = new NumericTextField();
+		acMod = new NumericTextField();
 		acMod.setText(Integer.toString(character.getCustomArmorClass()));
 		acMod.setMaxWidth(40);
 		//TODO: add listener
@@ -406,7 +425,7 @@ public class CharacterSheet extends TabPane {
 		hpMax.setText(Integer.toString(character.getMaxHP()));
 		hpMax.setMaxWidth(40);
 		//TODO: add listener
-		//FUTURE: make Max HP calculated by model...?
+		//FUTURE: make Max HP calculated by model?
 		hp.getChildren().addAll(hpCurrent,hpSlash,hpMax);
 		GridPane.setColumnSpan(hp,2);
 		
@@ -438,13 +457,14 @@ public class CharacterSheet extends TabPane {
 		attacks.setHgap(2);
 		
 		Label atkName = new Label("Name");
-		Label atkDmg = new Label("Atk Dmg");
+		Label atkNumDice = new Label("# of Dice");
+		Label atkTypeDice = new Label("Dice Sides");
 		Label atkType = new Label("Atk Type");
 		Label atkProp = new Label("Properties");
-		attacks.addRow(0,atkName,atkDmg,atkType,atkProp);
+		attacks.addRow(0,atkName,atkNumDice,atkTypeDice,atkType,atkProp);
 		
 		ObservableList<String> atks = FXCollections.observableArrayList(
-				"","Club","Dagger","Greatclub","Handaxe","Javelin","Light Hammer","Mace",
+				"Club","Dagger","Greatclub","Handaxe","Javelin","Light Hammer","Mace",
 				"Quarterstaff","Sickle","Spear","Light Crossbow","Dart","Shortbow","Sling",
 				"Battleaxe","Flail","Glaive","Greataxe","Greatsword","Halberd","Lance",
 				"Longsword","Maul","Morningstar","Pike","Rapier","Scimitar","Shortsword",
@@ -455,26 +475,48 @@ public class CharacterSheet extends TabPane {
 		atkNames = new ArrayList<ComboBox<String>>();
 		atkValues = new ArrayList<ArrayList<TextField>>();
 		for(int i=0; i<5; i++) {
+			int boxIndex = i; 
 			ComboBox<String> atkBox = new ComboBox<String>(atks);
+			atkBox.setEditable(true);
 			atkBox.setMaxWidth(200);
+			atkBox.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					int index = atkBox.getSelectionModel().getSelectedIndex();
+					Attack attack = new Attack(index);
+					atkValues.get(boxIndex).get(0).setText(Integer.toString(attack.getNumDice()));
+					atkValues.get(boxIndex).get(1).setText(Integer.toString(attack.getTypeDice()));
+					atkValues.get(boxIndex).get(2).setText(attack.getDamageType());
+					atkValues.get(boxIndex).get(3).setText(attack.getProperties());
+				}
+				
+			});
 			ArrayList<TextField> rowFields = new ArrayList<TextField>();
 			rowFields.addAll(Arrays.asList(
-					new UnfillableTextField(),
-					new UnfillableTextField(),
-					new UnfillableTextField()
+					new NumericTextField(),
+					new NumericTextField(),
+					new TextField(),
+					new TextField()
 					));
 			rowFields.get(0).setMaxWidth(40);
+			rowFields.get(1).setMaxWidth(40);
+			rowFields.get(3).textProperty().addListener((observable, oldValue, newValue) -> {
+				Tooltip temp = new Tooltip(rowFields.get(3).getText());
+				temp.setMaxWidth(300);
+				temp.setWrapText(true);
+				rowFields.get(3).setTooltip(temp);
+			});			
 			atkValues.add(rowFields);
-			atkNames.add(new ComboBox<String>(atks));
+			atkNames.add(atkBox);
 			
 			attacks.addRow(i+2,atkBox,rowFields.get(0),
-					rowFields.get(1),rowFields.get(2));
-			
-
-			//TODO: add button for attacks - removes all attacks, replaces all attacks
-			//TODO: make atkValues update with atkNames - same as Armor, essentially
+					rowFields.get(1),rowFields.get(2),rowFields.get(3));
 		}
-		
+		//TODO: call an update method for attacks
+		Button atkButton = new Button("Update Attacks");
+		atkButton.setOnMouseClicked(new AttackListener(character,atkNames,atkValues));
+		attacks.addRow(7,atkButton);
 		
 		HBox monAndEqp = new HBox();
 		monAndEqp.setSpacing(5);
@@ -516,6 +558,7 @@ public class CharacterSheet extends TabPane {
 				armorType.setText(nArmor.getArmorType());
 				armorProp.setText(nArmor.getProperties());
 			}
+			
 		});
 		
 		
@@ -534,7 +577,7 @@ public class CharacterSheet extends TabPane {
 		armorProp = new TextField();
 		armorProp.setText(character.getArmor().getProperties());
 		Button armorButton = new Button("Update Armor");
-		//TODO: add Listener
+		armorButton.setOnMouseClicked(new ArmorListener(character,armorName.getValue(),armorAC.getText(),armorStrReq.getText(),armorType.getText(),armorProp.getText()));
 		
 		
 		armor.getChildren().addAll(armNameLabel,armorName,armACLabel,armorAC,armSRLabel,
@@ -598,16 +641,42 @@ public class CharacterSheet extends TabPane {
 			);
 		features = new ArrayList<ComboBox<String>>();
 		featureDescrs = new ArrayList<TextField>();
-		for(int i=0; i<5; i++) {
-			features.add(new ComboBox<String>(featureList));
-			//TODO: add listeners to update fields
-			TextField tempField = new UnfillableTextField();
+		autoFeatures += character.getCharClass().getFeatures().size();
+		if(character.getBackground().getFeature()!=null) {
+			autoFeatures += 1;
+		}
+		autoFeatures += character.getRace().getFeatures().size();
+		
+		
+		for(int i=0; i<6; i++) {
+			int index = i;
+			ComboBox<String> tempBox = new ComboBox<String>(featureList);
+			tempBox.setEditable(true);
+			if(i<character.getFeatures().size()) {
+				tempBox.setValue(character.getFeatures().get(i).getName());
+				oldFeatureNames.add(character.getFeatures().get(i).getName());
+			}
+			features.add(tempBox);
+			tempBox.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					Feature feature = new Feature(tempBox.getValue());
+					featureDescrs.get(index).setText(feature.getDescription());
+				}
+				
+			});
+			TextField tempField = new TextField();
 			tempField.setMinWidth(325);
 			GridPane.setColumnSpan(tempField, 2);
+			if(i<character.getFeatures().size()) {
+				tempField.setText(character.getFeatures().get(i).getDescription());
+			}
 			featureDescrs.add(tempField);
-			featuresPane.addRow(i+1,features.get(i),tempField);
+			Button featureButton = new Button("Update Features");
+			featureButton.setOnMouseClicked(new FeatureListener(character,tempBox.getValue(),tempField.getText(),oldFeatureNames.get(i)));
+			featuresPane.addRow(i+1,tempBox,tempField, featureButton);
 		}
-		//TODO: add button to replace all features in character class
 		
 		//Add components to column three
 		
@@ -640,7 +709,7 @@ public class CharacterSheet extends TabPane {
 		Label name2Label = new Label("Character Name");
 		name2 = new TextField();
 		name2.setText(character.getName());
-		//TODO: add listener - same as listener above
+		name2.focusedProperty().addListener(new NameListener(character,name2.getText()));
 		
 		Label ageLabel = new Label("Age");
 		age = new TextField();
@@ -706,12 +775,10 @@ public class CharacterSheet extends TabPane {
 	                    charImage = fileChooser.showOpenDialog(stage);
 	                    if(charImage!=null) {
 	                    	appearance.setImage(new Image(charImage.toURI().toString()));
-	                    	//update model
+	                    	character.setAppearance(charImage); //no controller - easier to handle directly
 	                    }
 	                }
 	            });
-
-		//TODO: make above EventHandler a controller object
 		
 		Label backstoryLabel = new Label("Character Backstory");
 		backstory = new TextArea();
@@ -747,10 +814,10 @@ public class CharacterSheet extends TabPane {
 	                    symbolImage = fileChooser.showOpenDialog(stage);
 	                    if(charImage!=null) {
 	                    	symbolView.setImage(new Image(symbolImage.toURI().toString()));
+	                    	character.setSymbol(symbolImage);
 	                    }
 	                }
 	            });
-		//TODO: make above EventHandler in controller?
 		
 		symbolInfo.getChildren().addAll(symbolName,symbol,symbolView,symbolButton);
 		alliesAndOrgs.getChildren().addAll(allies,symbolInfo);
@@ -790,31 +857,34 @@ public class CharacterSheet extends TabPane {
 		Label spellClassLabel = new Label("Spellcasting Class");
 		spellClass = new UnfillableTextField();
 		spellClass.setUnfillable();
-		//TODO: add listener
 		Label spellAbilityLabel = new Label("Spellcasting Ability");
 		GridPane.setHalignment(spellAbilityLabel, HPos.CENTER);
 		spellAbility = new UnfillableTextField();
 		GridPane.setHalignment(spellAbility, HPos.CENTER);
 		spellAbility.setUnfillable();
 		spellAbility.setMaxWidth(80);
-		//TODO: add listener
 		Label spellSavLabel = new Label("Spell Save DC");
 		GridPane.setHalignment(spellSavLabel, HPos.CENTER);
 		spellSav = new UnfillableTextField();
 		GridPane.setHalignment(spellSav, HPos.CENTER);
 		spellSav.setUnfillable();
 		spellSav.setMaxWidth(80);
-		//TODO: add listener
 		Label spellBonusLabel = new Label("Spell Attack Bonus");
 		GridPane.setHalignment(spellBonusLabel, HPos.CENTER);
 		spellBonus = new UnfillableTextField();
 		GridPane.setHalignment(spellBonus, HPos.CENTER);
 		spellBonus.setUnfillable();
 		spellBonus.setMaxWidth(80);
-		//TODO: add listener
+		
+		Button spellUpdate = new Button("Update Spells");
+		spellUpdate.setMinSize(200, 40);
+		GridPane.setColumnSpan(spellUpdate, GridPane.REMAINING);
+		GridPane.setRowSpan(spellUpdate, GridPane.REMAINING);
+		spellUpdate.setOnMouseClicked(new SpellListener(character, spells));
 
 		topOfPage.addRow(0,spellClassLabel,spellAbilityLabel,spellSavLabel,spellBonusLabel);
 		topOfPage.addRow(1,spellClass,spellAbility,spellSav,spellBonus);
+		topOfPage.add(spellUpdate, 6, 0);
 		
 		//Only get values if character is a spellcaster
 		if(character.getCharClass().isSpellCaster()) {
@@ -840,12 +910,12 @@ public class CharacterSheet extends TabPane {
 		spellLevLabel.add(new Label("Level 9"));
 		
 		ObservableList<String> spellList = FXCollections.observableArrayList(
-				"Acid Splash"," Aid"," Alarm"," Alter Self"," Animal Friendship"," Animal Messenger","Animal Shapes"," Animate Dead"," Animate Objects"," Antilife Shell"," lAntimagic Field"," Antipathy/Sympathy"," Arcane Eye"," Arcane Gate"," Arcane Lock"," Armor of Agathys"," Arms of Hadar"," Astral Projection"," Augury"," Aura of Life"," Aura of Purity"," Aura of Vitality"," Awaken"," Bane"," Banishing Smite"," Banishment"," Barkskin"," Beacon of Hope"," Beast Sense"," Bestow Curse"," Bigby's Hand"," Blade Barrier"," Blade Ward"," Bless"," Blight"," Blinding Smite"," Blindness/Deafness"," Blink"," Blur"," Branding Smite"," Burning Hands"," Call Lightning"," Calm Emotions"," Chain Lightning"," Charm Person"," Chill Touch"," Chromatic Orb"," Circle of Death"," Circle of Power"," Clairvoyance"," Clone"," Cloud of Daggers"," Cloudkill"," Color Spray"," Command"," Commune"," Commune with Nature"," Compelled Duel"," Comprehend Languages"," Compulsion"," Cone of Cold"," Confusion"," Conjure Animals"," Conjure Barrage"," Conjure Celestial"," Conjure Elemental"," Conjure Fey"," Conjure Minor Elementals"," Conjure Volley"," Conjure Woodland Beings"," Contact Other Plane"," Contagion"," Contingency"," Continual Flame"," Control Water"," Control Weather"," Cordon of Arrows"," Counterspell"," Create Food and Water"," Create or Destroy Water"," Create Undead"," Creation"," Crown of Madness"," Crusader's Mantle"," Cure Wounds"," Dancing Lights"," Darkness"," Darkvision"," Daylight"," Death Ward"," Delayed Blast Fireball"," Demiplane"," Destructive Smite"," Destructive Wave"," Detect Evil and Good"," Detect Magic"," Detect Poison and Disease"," Detect Thoughts"," Dimension Door"," Disguise Self"," Disintegrate"," Dispel Evil and Good"," Dispel Magic"," Dissonant Whispers"," Divination"," Divine Favor"," Divine Word"," Dominate Beast"," Dominate Monster"," Dominate Person"," Drawmij's Instant Summons"," Dream"," Druidcraft"," Earthquake"," Eldritch Blast"," Elemental Weapon"," Enhance Ability"," Enlarge/Reduce"," Ensnaring Strike"," Entangle"," Enthrall"," Etherealness"," Evard's Black Tentacles"," Expeditious Retreat"," Eyebite"," Fabricate"," Faerie Fire"," False Life"," Fear"," Feather Fall"," Feeblemind"," Feign Death"," Find Familiar"," Find Steed"," Find the Path"," Find Traps"," Finger of Death"," Fire Bolt"," Fire Shield"," Fire Storm"," Fireball"," Flame Blade"," Flame Strike"," Flaming Sphere"," Flesh to Stone"," Fly"," Fog Cloud"," Forbiddance"," Forcecage"," Foresight"," Freedom of Movement"," Friends"," Gaseous Form"," Gate"," Geas"," Gentle Repose"," Giant Insect"," Glibness"," Globe of Invulnerability"," Glyph of Warding"," Goodberry"," Grasping Vine"," Grease"," Greater Invisibility"," Greater Restoration"," Guardian of Faith"," Guards and Wards"," Guidance"," Guiding Bolt"," Gust of Wind"," Hail of Thorns"," Hallow"," Hallucinatory Terrain"," Harm"," Haste"," Heal"," Healing Word"," Heat Metal"," Hellish Rebuke"," Heroes' Feast"," Heroism"," Hex"," Hold Monster"," Hold Person"," Holy Aura"," Hunger of Hadar"," Hunter's Mark"," Hypnotic Pattern"," Ice Storm"," Identify"," Illusory Script"," Imprisonment"," Incendiary Cloud"," Inflict Wounds"," Insect Plague"," Invisibility"," Jump"," Knock"," Legend Lore"," Leomund's Secret Chest"," Leomund's Tiny Hut"," Lesser Restoration"," Levitate"," Light"," Lightning Arrow"," Lightning Bolt"," Locate Animals or Plants"," Locate Creature"," Locate Object"," Longstrider"," Mage Armor"," Mage Hand"," Magic Circle"," Magic Jar"," Magic Missile"," Magic Mouth"," Magic Weapon"," Major Image"," Mass Cure Wounds"," Mass Heal"," Mass Healing Word"," Mass Suggestion"," Maze"," Meld into Stone"," Melf's Acid Arrow"," Mending"," Message"," Meteor Swarm"," Mind Blank"," Minor Illusion"," Mirage Arcane"," Mirror Image"," Mislead"," Misty Step"," Modify Memory"," Moonbeam"," Mordenkainen's Faithful Hound"," Mordenkainen's Magnificent Mansion"," Mordenkainen's Private Sanctum"," Mordenkainen's Sword"," Move Earth"," Nondetection"," Nystul's Magic Aura"," Otiluke's Freezing Sphere"," Otiluke's Resilient Sphere"," Otto's Irresistible Dance"," Pass without Trace"," Passwall"," Phantasmal Force"," Phantasmal Killer"," Phantom Steed"," Planar Ally"," Planar Binding"," Plane Shift"," Plant Growth"," Poison Spray"," Polymorph"," Power Word Heal"," Power Word Kill"," Power Word Stun"," Prayer of Healing"," Prestidigitation"," Prismatic Spray"," Prismatic Wall"," Produce Flame"," Programmed Illusion"," Project Image"," Protection from Energy"," Protection from Evil and Good"," Protection from Poison"," Purify Food and Drink"," Raise Dead"," Rary's Telepathic Bond"," Ray of Enfeeblement"," Ray of Frost"," Ray of Sickness"," Regenerate"," Reincarnate"," Remove Curse"," Resistance"," Resurrection"," Reverse Gravity"," Revivify"," Rope Trick"," Sacred Flame"," Sanctuary"," Scorching Ray"," Scrying"," Searing Smite"," See Invisibility"," Seeming"," Sending"," Sequester"," Shapechange"," Shatter"," Shield"," Shield of Faith"," Shillelagh"," Shocking Grasp"," Silence"," Silent Image"," Simulacrum"," Sleep"," Sleet Storm"," Slow"," Spare the Dying"," Speak with Animals"," Speak with Dead"," Speak with Plants"," Spider Climb"," Spike Growth"," Spirit Guardians"," Spiritual Weapon"," Staggering Smite"," Stinking Cloud"," Stone Shape"," Stoneskin"," Storm of Vengeance"," Suggestion"," Sunbeam"," Sunburst"," Swift Quiver"," Symbol"," Tasha's Hideous Laughter"," Telekinesis"," Telepathy"," Teleport"," Teleportation Circle"," Tenser's Floating Disk"," Thaumaturgy"," Thorn Whip"," Thunderous Smite"," Thunderwave"," Time Stop"," Tongues"," Transport via Plants"," Trap the Soul"," Tree Stride"," True Polymorph"," True Resurrection"," True Seeing"," True Strike"," Tsunami"," Unseen Servant"," Vampiric Touch"," Vicious Mockery"," Wall of Fire"," Wall of Force"," Wall of Ice"," Wall of Stone"," Wall of Thorns"," Warding Bond"," Water Breathing"," Water Walk"," Web"," Weird"," Wind Walk"," Wind Wall"," Wish"," Witch Bolt"," Word of Recall"," Wrathful Smite","Zone of Truth"
+				"Acid Splash","Aid","Alarm","Alter Self","Animal Friendship","Animal Messenger","Animal Shapes","Animate Dead","Animate Objects","Antilife Shell","lAntimagic Field","Antipathy/Sympathy","Arcane Eye","Arcane Gate","Arcane Lock","Armor of Agathys","Arms of Hadar","Astral Projection","Augury","Aura of Life","Aura of Purity","Aura of Vitality","Awaken","Bane","Banishing Smite","Banishment","Barkskin","Beacon of Hope","Beast Sense","Bestow Curse","Bigby's Hand","Blade Barrier","Blade Ward","Bless","Blight","Blinding Smite","Blindness/Deafness","Blink","Blur","Branding Smite","Burning Hands","Call Lightning","Calm Emotions","Chain Lightning","Charm Person","Chill Touch","Chromatic Orb","Circle of Death","Circle of Power","Clairvoyance","Clone","Cloud of Daggers","Cloudkill","Color Spray","Command","Commune","Commune with Nature","Compelled Duel","Comprehend Languages","Compulsion","Cone of Cold","Confusion","Conjure Animals","Conjure Barrage","Conjure Celestial","Conjure Elemental","Conjure Fey","Conjure Minor Elementals","Conjure Volley","Conjure Woodland Beings","Contact Other Plane","Contagion","Contingency","Continual Flame","Control Water","Control Weather","Cordon of Arrows","Counterspell","Create Food and Water","Create or Destroy Water","Create Undead","Creation","Crown of Madness","Crusader's Mantle","Cure Wounds","Dancing Lights","Darkness","Darkvision","Daylight","Death Ward","Delayed Blast Fireball","Demiplane","Destructive Smite","Destructive Wave","Detect Evil and Good","Detect Magic","Detect Poison and Disease","Detect Thoughts","Dimension Door","Disguise Self","Disintegrate","Dispel Evil and Good","Dispel Magic","Dissonant Whispers","Divination","Divine Favor","Divine Word","Dominate Beast","Dominate Monster","Dominate Person","Drawmij's Instant Summons","Dream","Druidcraft","Earthquake","Eldritch Blast","Elemental Weapon","Enhance Ability","Enlarge/Reduce","Ensnaring Strike","Entangle","Enthrall","Etherealness","Evard's Black Tentacles","Expeditious Retreat","Eyebite","Fabricate","Faerie Fire","False Life","Fear","Feather Fall","Feeblemind","Feign Death","Find Familiar","Find Steed","Find the Path","Find Traps","Finger of Death","Fire Bolt","Fire Shield","Fire Storm","Fireball","Flame Blade","Flame Strike","Flaming Sphere","Flesh to Stone","Fly","Fog Cloud","Forbiddance","Forcecage","Foresight","Freedom of Movement","Friends","Gaseous Form","Gate","Geas","Gentle Repose","Giant Insect","Glibness","Globe of Invulnerability","Glyph of Warding","Goodberry","Grasping Vine","Grease","Greater Invisibility","Greater Restoration","Guardian of Faith","Guards and Wards","Guidance","Guiding Bolt","Gust of Wind","Hail of Thorns","Hallow","Hallucinatory Terrain","Harm","Haste","Heal","Healing Word","Heat Metal","Hellish Rebuke","Heroes' Feast","Heroism","Hex","Hold Monster","Hold Person","Holy Aura","Hunger of Hadar","Hunter's Mark","Hypnotic Pattern","Ice Storm","Identify","Illusory Script","Imprisonment","Incendiary Cloud","Inflict Wounds","Insect Plague","Invisibility","Jump","Knock","Legend Lore","Leomund's Secret Chest","Leomund's Tiny Hut","Lesser Restoration","Levitate","Light","Lightning Arrow","Lightning Bolt","Locate Animals or Plants","Locate Creature","Locate Object","Longstrider","Mage Armor","Mage Hand","Magic Circle","Magic Jar","Magic Missile","Magic Mouth","Magic Weapon","Major Image","Mass Cure Wounds","Mass Heal","Mass Healing Word","Mass Suggestion","Maze","Meld into Stone","Melf's Acid Arrow","Mending","Message","Meteor Swarm","Mind Blank","Minor Illusion","Mirage Arcane","Mirror Image","Mislead","Misty Step","Modify Memory","Moonbeam","Mordenkainen's Faithful Hound","Mordenkainen's Magnificent Mansion","Mordenkainen's Private Sanctum","Mordenkainen's Sword","Move Earth","Nondetection","Nystul's Magic Aura","Otiluke's Freezing Sphere","Otiluke's Resilient Sphere","Otto's Irresistible Dance","Pass without Trace","Passwall","Phantasmal Force","Phantasmal Killer","Phantom Steed","Planar Ally","Planar Binding","Plane Shift","Plant Growth","Poison Spray","Polymorph","Power Word Heal","Power Word Kill","Power Word Stun","Prayer of Healing","Prestidigitation","Prismatic Spray","Prismatic Wall","Produce Flame","Programmed Illusion","Project Image","Protection from Energy","Protection from Evil and Good","Protection from Poison","Purify Food and Drink","Raise Dead","Rary's Telepathic Bond","Ray of Enfeeblement","Ray of Frost","Ray of Sickness","Regenerate","Reincarnate","Remove Curse","Resistance","Resurrection","Reverse Gravity","Revivify","Rope Trick","Sacred Flame","Sanctuary","Scorching Ray","Scrying","Searing Smite","See Invisibility","Seeming","Sending","Sequester","Shapechange","Shatter","Shield","Shield of Faith","Shillelagh","Shocking Grasp","Silence","Silent Image","Simulacrum","Sleep","Sleet Storm","Slow","Spare the Dying","Speak with Animals","Speak with Dead","Speak with Plants","Spider Climb","Spike Growth","Spirit Guardians","Spiritual Weapon","Staggering Smite","Stinking Cloud","Stone Shape","Stoneskin","Storm of Vengeance","Suggestion","Sunbeam","Sunburst","Swift Quiver","Symbol","Tasha's Hideous Laughter","Telekinesis","Telepathy","Teleport","Teleportation Circle","Tenser's Floating Disk","Thaumaturgy","Thorn Whip","Thunderous Smite","Thunderwave","Time Stop","Tongues","Transport via Plants","Trap the Soul","Tree Stride","True Polymorph","True Resurrection","True Seeing","True Strike","Tsunami","Unseen Servant","Vampiric Touch","Vicious Mockery","Wall of Fire","Wall of Force","Wall of Ice","Wall of Stone","Wall of Thorns","Warding Bond","Water Breathing","Water Walk","Web","Weird","Wind Walk","Wind Wall","Wish","Witch Bolt","Word of Recall","Wrathful Smite","Zone of Truth"
 		);
 		
 		spells = new ArrayList<ArrayList<ComboBox<String>>>();
-//		spellSlots = new ArrayList<UnfillableTextField>();
-//		spellSlotsLeft = new ArrayList<TextField>();
+//		spellSlots = new ArrayList<UnfillableTextField>(); // FUTURE: implement spell slots when implemented in model
+//		spellSlotsLeft = new ArrayList<TextField>(); // FUTURE: implement spell slots remaining when implemented in model
 		int[] spellNumbers = new int[]{8,12,13,13,13,9,9,9,7,7};
 		for(int i=0; i<10; i++) {
 			spellLevLabel.get(i).setFont(Font.font(spellLevLabel.get(i).getFont().getName(),FontWeight.BOLD,spellLevLabel.get(i).getFont().getSize()));
@@ -860,10 +930,27 @@ public class CharacterSheet extends TabPane {
 //			spellSlotsLeft.add(slotsLeft);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
-				ComboBox<String> tempSpellBox = new ComboBox<String>();
+				ComboBox<String> tempSpellBox = new ComboBox<String>(spellList);
 				//FUTURE: make button where user can make custom spells?
 				tempSpellBox.setMinWidth(250);
+				tempSpellBox.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+					Spell spell = new Spell(tempSpellBox.getValue());
+					String spellDetails = "Cast Time: " + spell.getCastTime() + "\nComponents: " + spell.getComponents()
+					+ "\nDuration: " + spell.getDuration() + "\nRange: " + spell.getRange()
+					+ "\nDescription: " + spell.getDescription();
+					Tooltip spellTip = new Tooltip(spellDetails);
+					spellTip.setWrapText(true);
+					spellTip.setMaxWidth(300);
+					spellTip.setWrapText(true);
+					tempSpellBox.setTooltip(spellTip);
+					}
+					
+				});
 				spellLevel.add(tempSpellBox);
+				//TODO: update spells using method
 			}
 		}
 		
@@ -961,105 +1048,12 @@ public class CharacterSheet extends TabPane {
 	
 	//TODO: Replace with single update method
 	
-	public void updateName() { this.name.setText(character.getName()); }
-	public void updateClass() { this.charClass.setValue(character.getCharClass().getName()); }
-	public void updateLevel() { this.level.setText(Integer.toString(character.getLevel())); }
-	public void updateExp() { this.exp.setText(Integer.toString(character.getExperience())); }
-	public void updateBackground() { this.bg.setText(character.getBackground().getName()); }
+	
 	//FUTURE: removing background - takes boolean, if true removes proficiencies, if false does not
-	public void updateRace() { this.race.setValue(character.getRace().getName()); }
-	public void updateSubrace() { this.subrace.setValue(character.getRace().getSubRace().getName()); }
-	public void updateAlignment() { this.alignment.setValue(character.getAlignment()); }
-	public void updateStats() {
-		for(int i=0; i<6; i++) {
-			this.stats.get(i).setText(Integer.toString(character.getStat(i)));
-		}}
-	public void updateStatMods() {
-		for(int i=0; i<6; i++) {
-			this.statMods.get(i).setText(Integer.toString(character.getStatMod(i)));
-		}}
-	public void updateStatSavs() {
-		for(int i=0; i<6; i++) {
-			this.statSav.get(i).setText(Integer.toString(character.getStatSave(i)));
-		}}
-	public void updateStatProf() {
-		for(int i=0; i<6; i++) {
-			this.statProfList.get(i).setSelected(character.getStatProf(i));
-		}}
-	public void updateProf() { this.prof.setText(Integer.toString(character.getProfBonus())); }
-	public void updateCurrentHP() { this.hpCurrent.setText(Integer.toString(character.getCurrentHP())); }
-	public void updateMaxHP() { this.hpMax.setText(Integer.toString(character.getMaxHP())); }
-	public void updateTempHP() { this.tempHp.setText(Integer.toString(character.getTempHP())); }
-	public void updateSkillProf() {
-		for(int i=0; i<18; i++) {
-			this.skillButtList.get(i).setSelected(character.getSkillProf(i));
-	}}
-	public void updateSkillVals() {
-		for(int i=0; i<18; i++) {
-			this.skillValList.get(i).setText(Integer.toString(character.getSkill(i)));
-		}}
-	public void updateInsp() { this.insp.setSelected(character.isInspired()); }
-	public void updateArmor() {
-		Armor armor = character.getArmor();
-		this.armorName.setValue(armor.getName());
-		this.armorAC.setText(Integer.toString(armor.getBaseAC()));
-		this.armorStrReq.setText(Integer.toString(armor.getStrReq()));
-		this.armorType.setText(armor.getArmorType());
-		this.armorProp.setText(armor.getProperties());
-	}
-	public void updateAC() { this.ac.setText(Integer.toString(character.getArmorClass())); } 
-	//Still not sure; AC mod?
-	public void updateSpd() { this.spd.setText(Integer.toString(character.getSpeed())); } 
-	//Still not sure; spd mod?
-	public void updateHitDice() { this.hitDice.setText(Integer.toString(character.getCharClass().getHitDie())); }
-	public void updatePerc() { this.perc.setText(Integer.toString(character.getPassiveWisdom())); }
-	// Features!
-	// Attacks!
-	// Initiative
-	public void updateMoney() {
-		for(int i=0; i<5; i++) {
-			this.money.get(i).setText(Integer.toString(character.getMoney(i)));
-		}}
-	public void updateOtherProf() { this.lang.setText(character.getOtherProfs()); }
-	public void updatePersonality() { this.pers.setText(character.getPersonality()); }
-	public void updateIdeals() { this.ideals.setText(character.getIdeals()); }
-	public void updateBonds() { this.bonds.setText(character.getBonds()); }
-	public void updateFlaws() { this.flaws.setText(character.getFlaws()); }
-	public void updateAge() { this.age.setText(character.getAge()); }
-	public void updateHeight() { this.height.setText(character.getHeight()); }
-	public void updateWeight() { this.weight.setText(character.getWeight()); }
-	public void updateEyes() { this.eyes.setText(character.getEyes()); }
-	public void updateSkin() { this.skin.setText(character.getSkin()); }
-	public void updateHair() { this.hair.setText(character.getHair()); }
-	public void updateAppearance() { 
-		
-	}
-	public void updateBackstory() { this.backstory.setText(character.getBackstory()); }
-	public void updateAllies() { this.allies.setText(character.getAlliesOrganizations()); }
-	public void updateTreasure() { this.allies.setText(""/*character.getMoreEquipment()*/); }
-	public void updateSpellcasting() {
-		if(character.getCharClass().isSpellCaster()) {
-			//TODO: figure out spellcasting stuff and get update method working
-		} else {
-			//empty all spellcasting stuff
-		}
-	}
-	public void updateSpells() {
-		for(Spell tempSpell : character.getSpells()) {
-			int spellLevel = tempSpell.getLevel();
-			//Get next ComboBox somehow...?
-			String ritualText;
-			if(tempSpell.isRitual()) { ritualText = "YES"; } else { ritualText = "NO"; }
-//			spellField.setTooltip(new Tooltip(
-//					"Cast Time: " + tempSpell.getCastTime() + "; " +
-//			"Range: " + tempSpell.getRange() + "; " +
-//			"Components: " + tempSpell.getComponents() + "; " +
-//			"Duration: " + tempSpell.getDuration() + "; " +
-//			"Ritual: " + ritualText + "; " +
-//			"Description: " + tempSpell.getDescription()
-//				));
-//			this.spells.get(spellLevel).add(spellField);
-		}
+	
+	@Override
+	public void updated() {
+		//TODO: add updates
 	}
 	
 	//TextField classes for use above
@@ -1081,7 +1075,7 @@ public class CharacterSheet extends TabPane {
 	private class UnfillableTextField extends TextField {
 		public void setUnfillable() {
 			this.setEditable(false);
-			this.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY,null,null)));
+			this.setBackground(new javafx.scene.layout.Background(new BackgroundFill(Color.LIGHTGREY,null,null)));
 		}
 	}
 	
