@@ -7,6 +7,8 @@ import java.util.Arrays;
 import controller.ArmorListener;
 import controller.AttackListener;
 import controller.BackgroundListener;
+import controller.ClassListener;
+import controller.ExpListener;
 import controller.FeatureListener;
 import controller.NameListener;
 import controller.SpellListener;
@@ -52,8 +54,9 @@ public class CharacterSheet extends TabPane implements Listener {
 	
 	private Character character;
 	
-	private int autoFeatures; //number of features from Class/Race/Background
+	private ArrayList<Feature> autoFeatureList; //number of features from Class/Race/Background
 	private ArrayList<String> oldFeatureNames;
+	private int[] spellNumbers;
 	
 	//all areas that need to send or receive
 	TextField name, name2, exp, prof, hpCurrent, tempHp, hpMax,
@@ -68,7 +71,7 @@ public class CharacterSheet extends TabPane implements Listener {
 	RadioButton insp;
 	ArrayList<RadioButton> skillButtList, statProfList;
 	ComboBox<String> bg, alignment, charClass, race, subrace, armorName;
-	TextArea lang, equip, pers, ideals, bonds, flaws, allies, otherFeatures, treasure, backstory;
+	TextArea lang, equip, pers, ideals, bonds, flaws, allies, treasure, backstory;
 	ArrayList<ComboBox<String>> atkNames, features;
 	ArrayList<ArrayList<TextField>> atkValues;
 	ImageView appearance, symbolView;
@@ -121,7 +124,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		charClass.setItems(classList);
 		charClass.setValue(character.getCharClass().getName());
 		//FUTURE: add dialog box for custom classes
-		//TODO: add listener
+		charClass.focusedProperty().addListener(new ClassListener(character,charClass.getSelectionModel().getSelectedIndex()));
 		
 		Label levelLabel = new Label("Level");
 		level = new UnfillableTextField();
@@ -134,7 +137,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		exp = new NumericTextField();
 		exp.setText(Integer.toString(character.getExperience()));
 		exp.setMaxWidth(60);
-		//TODO: add listener
+		exp.focusedProperty().addListener(new ExpListener(character,exp.getText()));
 		
 		Label bgLabel = new Label("Background");
 		bg = new ComboBox<String>(FXCollections.observableArrayList(
@@ -166,7 +169,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		race.setItems(raceList);
 		race.setValue(character.getRace().getName());
 		//FUTURE: add dialog box for custom races
-		//TODO: add listener
+		
 		
 		Label subraceLabel = new Label("Subrace");
 		subrace = new ComboBox<String>();
@@ -641,14 +644,9 @@ public class CharacterSheet extends TabPane implements Listener {
 			);
 		features = new ArrayList<ComboBox<String>>();
 		featureDescrs = new ArrayList<TextField>();
-		autoFeatures += character.getCharClass().getFeatures().size();
-		if(character.getBackground().getFeature()!=null) {
-			autoFeatures += 1;
-		}
-		autoFeatures += character.getRace().getFeatures().size();
 		
 		
-		for(int i=0; i<6; i++) {
+		for(int i=0; i<8; i++) {
 			int index = i;
 			ComboBox<String> tempBox = new ComboBox<String>(featureList);
 			tempBox.setEditable(true);
@@ -812,7 +810,7 @@ public class CharacterSheet extends TabPane implements Listener {
 	                @Override
 	                public void handle(final ActionEvent e) {
 	                    symbolImage = fileChooser.showOpenDialog(stage);
-	                    if(charImage!=null) {
+	                    if(symbolImage!=null) {
 	                    	symbolView.setImage(new Image(symbolImage.toURI().toString()));
 	                    	character.setSymbol(symbolImage);
 	                    }
@@ -916,7 +914,8 @@ public class CharacterSheet extends TabPane implements Listener {
 		spells = new ArrayList<ArrayList<ComboBox<String>>>();
 //		spellSlots = new ArrayList<UnfillableTextField>(); // FUTURE: implement spell slots when implemented in model
 //		spellSlotsLeft = new ArrayList<TextField>(); // FUTURE: implement spell slots remaining when implemented in model
-		int[] spellNumbers = new int[]{8,12,13,13,13,9,9,9,7,7};
+		spellNumbers = new int[]{8,12,13,13,13,9,9,9,7,7};
+		spellsChosen = new ArrayList<ArrayList<RadioButton>>();
 		for(int i=0; i<10; i++) {
 			spellLevLabel.get(i).setFont(Font.font(spellLevLabel.get(i).getFont().getName(),FontWeight.BOLD,spellLevLabel.get(i).getFont().getSize()));
 			ArrayList<ComboBox<String>> spellLevel = new ArrayList<ComboBox<String>>();
@@ -929,6 +928,8 @@ public class CharacterSheet extends TabPane implements Listener {
 //			slotsLeft.setMaxWidth(40);
 //			spellSlotsLeft.add(slotsLeft);
 			int numberSpells = spellNumbers[i];
+			ArrayList<RadioButton> spellLevChose = new ArrayList<RadioButton>();
+			spellsChosen.add(spellLevChose);
 			for(int j=0; j<numberSpells; j++) {
 				ComboBox<String> tempSpellBox = new ComboBox<String>(spellList);
 				//FUTURE: make button where user can make custom spells?
@@ -950,7 +951,8 @@ public class CharacterSheet extends TabPane implements Listener {
 					
 				});
 				spellLevel.add(tempSpellBox);
-				//TODO: update spells using method
+				RadioButton tempSpellChoice = new RadioButton();
+				spellLevChose.add(tempSpellChoice);
 			}
 		}
 		
@@ -970,7 +972,9 @@ public class CharacterSheet extends TabPane implements Listener {
 //			restOne.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
-				restOne.getChildren().add(spells.get(i).get(j));
+				HBox temp = new HBox();
+				temp.getChildren().addAll(spellsChosen.get(i).get(j),spells.get(i).get(j));
+				restOne.getChildren().add(temp);
 			}
 		}
 		for(int i=2; i<4; i++) {
@@ -984,7 +988,9 @@ public class CharacterSheet extends TabPane implements Listener {
 //			restTwo.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
-				restTwo.getChildren().add(spells.get(i).get(j));
+				HBox temp = new HBox();
+				temp.getChildren().addAll(spellsChosen.get(i).get(j),spells.get(i).get(j));
+				restTwo.getChildren().add(temp);
 			}
 		}
 		for(int i=4; i<6; i++) {
@@ -998,7 +1004,9 @@ public class CharacterSheet extends TabPane implements Listener {
 //			restThree.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
-				restThree.getChildren().add(spells.get(i).get(j));
+				HBox temp = new HBox();
+				temp.getChildren().addAll(spellsChosen.get(i).get(j),spells.get(i).get(j));
+				restThree.getChildren().add(temp);
 			}
 		}
 		for(int i=6; i<8; i++) {
@@ -1012,7 +1020,9 @@ public class CharacterSheet extends TabPane implements Listener {
 //			restFour.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
-				restFour.getChildren().add(spells.get(i).get(j));
+				HBox temp = new HBox();
+				temp.getChildren().addAll(spellsChosen.get(i).get(j),spells.get(i).get(j));
+				restFour.getChildren().add(temp);
 			}
 		}
 		for(int i=8; i<10; i++) {
@@ -1026,7 +1036,9 @@ public class CharacterSheet extends TabPane implements Listener {
 //			restFive.getChildren().add(tempBox);
 			int numberSpells = spellNumbers[i];
 			for(int j=0; j<numberSpells; j++) {
-				restFive.getChildren().add(spells.get(i).get(j));
+				HBox temp = new HBox();
+				temp.getChildren().addAll(spellsChosen.get(i).get(j),spells.get(i).get(j));
+				restFive.getChildren().add(temp);
 			}
 		}
 		
@@ -1044,6 +1056,8 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		//Add all tabs to CharacterSheet object
 		this.getTabs().addAll(tabOne,tabTwo,tabThree);
+		
+		updated();
 	}
 	
 	//TODO: Replace with single update method
@@ -1053,7 +1067,151 @@ public class CharacterSheet extends TabPane implements Listener {
 	
 	@Override
 	public void updated() {
-		//TODO: add updates
+		//Name
+		name.setText(character.getName());
+		name2.setText(character.getName());
+		//Level
+		level.setText(Integer.toString(character.getLevel()));
+		//EXP
+		exp.setText(Integer.toString(character.getExperience()));
+		//Background
+		bg.setValue(character.getBackground().getName());
+		//Alignment
+		alignment.setValue(character.getAlignment());
+		//Class
+		charClass.setValue(character.getCharClass().getName());
+		//Race
+		race.setValue(character.getRace().getName());
+		//Subrace
+		subrace.setValue(character.getRace().getSubRace().getName());
+		//Stats, Stat Mods, Stat Save, Stat Proficiencies
+		for(int i=0; i<6; i++) {
+			stats.get(i).setText(Integer.toString(character.getStat(i)));
+			statMods.get(i).setText(Integer.toString(character.getStatMod(i)));
+			statSav.get(i).setText(Integer.toString(character.getStatSave(i)));
+			statProfList.get(i).setSelected(character.getStatProf(i));
+		}
+		//Skill Proficiencies, Skill Values
+		for(int i=0; i<18; i++) {
+			skillButtList.get(i).setSelected(character.getSkillProf(i));
+			skillValList.get(i).setText(Integer.toString(character.getSkill(i)));
+		}
+		//Inspiration
+		insp.setSelected(character.isInspired());
+		//Proficiency Bonus
+		prof.setText(Integer.toString(character.getProfBonus()));
+		//HP
+		hpCurrent.setText(Integer.toString(character.getCurrentHP()));
+		tempHp.setText(Integer.toString(character.getTempHP()));
+		hpMax.setText(Integer.toString(character.getMaxHP()));
+		//Armor
+		armorName.setValue(character.getArmor().getName());
+		//TODO: test to see if other armor fields get updated
+		//Initiative
+		init.setText(Integer.toString(character.getInit()));
+		//Armor Class
+		ac.setText(Integer.toString(character.getArmorClass()));
+		acMod.setText(Integer.toString(character.getCustomArmorClass()));
+		//Speed
+		spd.setText(Integer.toString(character.getSpeed()));
+		spdMod.setText(Integer.toString(character.getCustomSpeed()));
+		//Hit Dice
+		hitDice.setText(Integer.toString(character.getCharClass().getHitDie()));
+		//Perception
+		perc.setText(Integer.toString(character.getPassiveWisdom()));
+		//Money
+		for(int i=0; i<5; i++) { money.get(i).setText(Integer.toString(character.getMoney(i)));	}
+		//Attacks
+		for(int i=0; i<atkNames.size(); i++) {
+			atkNames.get(i).setValue(character.getAttacks().get(i).getName());
+			//TODO: test to see if other attack fields get updated
+		}
+		//Features
+		ArrayList<Feature> charFeatures = character.getFeatures();
+		//Set number of features from class, background and race
+		autoFeatureList = character.getCharClass().getFeatures();
+		if(character.getBackground().getFeature()!=null) {
+			autoFeatureList.add(character.getBackground().getFeature());
+		}
+		autoFeatureList.addAll(character.getRace().getFeatures());
+		//Set names of features and feature list
+		oldFeatureNames = new ArrayList<String>();
+		for(int i=0; i<autoFeatureList.size(); i++) {
+			String name = autoFeatureList.get(i).getName();
+			oldFeatureNames.add(name);
+			features.get(i).setValue(name);
+		}
+		for(int i=autoFeatureList.size(); i<charFeatures.size(); i++) {
+			String name = charFeatures.get(i).getName();
+			oldFeatureNames.add(name);
+			features.get(i).setValue(name);
+			//featureDescrs.get(i).setText(charFeatures.get(i).getDescription());
+			//TODO: test to see if descr gets updated; if not, implement above line
+		}
+		//Age
+		age.setText(character.getAge());
+		//Height
+		height.setText(character.getHeight());
+		//Weight
+		weight.setText(character.getWeight());
+		//Eyes
+		eyes.setText(character.getEyes());
+		//Skin
+		skin.setText(character.getSkin());
+		//Hair
+		hair.setText(character.getHair());
+		//Symbol
+		symbol.setText(character.getSymbolName());
+		//Languages and Other Proficiencies
+		lang.setText(character.getOtherProfs());
+		//Equipment
+		equip.setText(character.getEquipment());
+		//Personality
+		pers.setText(character.getPersonality());
+		//Ideals
+		ideals.setText(character.getIdeals());
+		//Bonds
+		bonds.setText(character.getBonds());
+		//Flaws
+		flaws.setText(character.getFlaws());
+		//Allies and Organizations
+		allies.setText(character.getAlliesOrganizations());
+		//Treasure/Other Equipment
+		treasure.setText(character.getMoreEquipment());
+		//Backstory
+		backstory.setText(character.getBackstory());
+		//Appearance
+		charImage = character.getAppearance();
+		if(charImage!=null) {
+			symbolView.setImage(new Image(symbolImage.toURI().toString()));
+		}
+		//Symbol Image
+		symbolImage = character.getSymbol();
+		if(symbolImage!=null) {
+			symbolView.setImage(new Image(symbolImage.toURI().toString()));
+		}
+		//Spells
+		boolean isSpellcaster = character.getCharClass().isSpellCaster();
+		if(isSpellcaster) {
+			spellClass.setText(character.getCharClass().getName());
+			spellAbility.setText(character.getSpellcastingAbility());
+			spellSav.setText(Integer.toString(character.getSpellSaveDC()));
+			spellBonus.setText(Integer.toString(character.getSpellAttackBonus()));
+		} else {
+			spellClass.setText("");
+			spellAbility.setText("");
+			spellSav.setText("");
+			spellBonus.setText("");
+		}
+		currentSpells = character.getSpells();
+		int[] spellCounters = {0,0,0,0,0,0,0,0,0,0};
+		for(Spell nextSpell : currentSpells) {
+			int spellLevel = nextSpell.getLevel();
+			spells.get(spellLevel).get(spellCounters[spellLevel]).setValue(nextSpell.getName());
+			spellCounters[spellLevel]++;
+		}
+		
+		
 	}
 	
 	//TextField classes for use above

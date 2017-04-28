@@ -16,7 +16,9 @@ public class NameListener implements ChangeListener<Boolean> {
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-		character.setName(name);
+		if(oldValue) { //if was focused (oldValue is True)
+			character.setName(name);
+		}
 	}
 
 }

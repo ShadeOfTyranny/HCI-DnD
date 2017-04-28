@@ -21,7 +21,7 @@ public class SpellListener implements EventHandler<MouseEvent> {
 
 	@Override
 	public void handle(MouseEvent event) {
-		//TODO: remove all spells // character.removeSpells();
+		character.removeSpells();
 		int spellSize = spells.size();
 		for(int i=0; i<spellSize; i++) {
 			int levelSize = spells.get(i).size();

@@ -2,23 +2,22 @@ package controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import model.Background;
 import model.Character;
 
-public class BackgroundListener implements ChangeListener<Boolean> {
+public class ExpListener implements ChangeListener<Boolean> {
 
 	private Character character;
-	private int index;
+	private String exp;
 	
-	public BackgroundListener(Character character, int index) {
+	public ExpListener(Character character, String exp) {
 		this.character = character;
-		this.index = index;
+		this.exp = exp;
 	}
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 		if(oldValue) { //if was focused (oldValue is True)
-			character.setBackground(new Background(index));
+			character.setExperience(Integer.parseInt(exp));
 		}
 	}
 

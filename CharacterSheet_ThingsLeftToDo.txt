@@ -1,6 +1,6 @@
 X Name listener : TextField
- Class listener : ComboBox<String>
- Exp listener : TextField
+X Class listener : ComboBox<String>
+X Exp listener : TextField
 X [Making Background a ComboBox]
 X [Background listener]
  Race listener : ComboBox<String>
