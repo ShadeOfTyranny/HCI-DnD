@@ -101,7 +101,6 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		Label nameLabel = new Label("Character Name"); 
 		name = new TextField(); 
-		name.setText(character.getName());
 		name.focusedProperty().addListener(new NameListener(character,name.getText()));
 		
 		Label classLabel = new Label("Class");
@@ -122,22 +121,19 @@ public class CharacterSheet extends TabPane implements Listener {
 			        "Wizard"
 			    );
 		charClass.setItems(classList);
-		charClass.setValue(character.getCharClass().getName());
 		//FUTURE: add dialog box for custom classes
-		charClass.focusedProperty().addListener(new ClassListener(character,charClass.getSelectionModel().getSelectedIndex()));
+		charClass.focusedProperty().addListener(new ClassListener(character,charClass));
 		
 		Label levelLabel = new Label("Level");
 		level = new UnfillableTextField();
 		level.setUnfillable();
-		level.setText(Integer.toString(character.getLevel()));
 		level.setMaxWidth(40);
 		//FUTURE: leveling up, activate when you want?
 		
 		Label expLabel = new Label("Experience");
 		exp = new NumericTextField();
-		exp.setText(Integer.toString(character.getExperience()));
 		exp.setMaxWidth(60);
-		exp.focusedProperty().addListener(new ExpListener(character,exp.getText()));
+		exp.focusedProperty().addListener(new ExpListener(character,exp));
 		
 		Label bgLabel = new Label("Background");
 		bg = new ComboBox<String>(FXCollections.observableArrayList(
@@ -155,9 +151,8 @@ public class CharacterSheet extends TabPane implements Listener {
 				"Soldier",
 				"Urchin"
 				));
-		bg.setValue(character.getBackground().getName());
 		//FUTURE: Add dialog box for custom backgrounds
-		bg.focusedProperty().addListener(new BackgroundListener(character,bg.getSelectionModel().getSelectedIndex()));
+		bg.focusedProperty().addListener(new BackgroundListener(character,bg));
 		
 		Label raceLabel = new Label("Race");
 		race = new ComboBox<String>();
@@ -167,9 +162,8 @@ public class CharacterSheet extends TabPane implements Listener {
 			        "Gnome","Half-Elf","Half-Orc","Tiefling"
 			    );
 		race.setItems(raceList);
-		race.setValue(character.getRace().getName());
 		//FUTURE: add dialog box for custom races
-		
+		race.focusedProperty().addListener(new RaceListener(character,race,subrace));
 		
 		Label subraceLabel = new Label("Subrace");
 		subrace = new ComboBox<String>();
@@ -180,9 +174,8 @@ public class CharacterSheet extends TabPane implements Listener {
 			        "Rock Gnome"
 			    );
 		subrace.setItems(subraceList);
-		subrace.setValue(character.getRace().getSubRace().getName());
 		//FUTURE: add dialog box for custom subraces
-		//TODO: add listener
+		subrace.focusedProperty().addListener(new SubraceListener(character,subrace));
 		
 		Label alignmentLabel = new Label("Alignment");
 		alignment = new ComboBox<String>();
@@ -194,8 +187,7 @@ public class CharacterSheet extends TabPane implements Listener {
 			        "Chaotic Good","Chaotic Neutral","Chaotic Evil"
 			    );
 		alignment.setItems(alignmentList);
-		alignment.setValue(character.getAlignment());
-		//TODO: add listener
+		alignment.focusedProperty().addListener(new AlignmentListener(character,alignment));
 		
 		//Add top section components to layout
 		
@@ -232,14 +224,12 @@ public class CharacterSheet extends TabPane implements Listener {
 			Label statLabel = new Label(statNames.get(i));
 			TextField stat = new NumericTextField();
 			this.stats.add(stat);
-			stat.setText(Integer.toString(character.getStat(i)));
 			stat.setMaxWidth(40);
-			//TODO: add listener (based on i for stat)
+			stat.focusedProperty().addListener(new StatListener(character,stat,i));
 			//FUTURE: something about three fields instead of two...?
 			Label statModLabel = new Label("Mod");
 			UnfillableTextField statMod = new UnfillableTextField();
 			this.statMods.add(statMod);
-			statMod.setText(Integer.toString(character.getStatMod(i)));
 			statMod.setUnfillable();
 			statMod.setMaxWidth(40);
 			stats.addColumn(0,statLabel,stat);
@@ -254,16 +244,14 @@ public class CharacterSheet extends TabPane implements Listener {
 		HBox inspLayout = new HBox();
 		Label inspLabel = new Label("Inspiration");
 		insp = new RadioButton();
-		insp.setSelected(character.isInspired());
-		//TODO: add listener
+		insp.setOnAction(new InspListener(character,insp));
 		inspLayout.getChildren().addAll(insp,inspLabel);
 		
 		HBox profLayout = new HBox();
 		Label profLabel = new Label("Proficiency Bonus");
 		prof = new NumericTextField();
 		prof.setMaxWidth(40);
-		prof.setText(Integer.toString(character.getProfBonus()));
-		//TODO: add listener
+		prof.focusedProperty().addListener(new ProfListener(character,prof));
 		profLayout.getChildren().addAll(prof,profLabel);
 		
 		GridPane savThrows = new GridPane();
@@ -277,16 +265,14 @@ public class CharacterSheet extends TabPane implements Listener {
 		statProfList = new ArrayList<RadioButton>();
 		for(int i = 0; i<6; i++) {
 			RadioButton statProf = new RadioButton();
-			statProf.setSelected(character.getStatProf(i));
 			statProfList.add(statProf);
-			//TODO: add listener
+			statProf.onActionProperty(new StatProfListener(character,statProf,i));
 			savThrows.add(statProf,0,i+1);
 		}
 		//values for saving throws
 		statSav = new ArrayList<UnfillableTextField>();
 		for(int i=0; i<6; i++) {
 			UnfillableTextField statSav = new UnfillableTextField();
-			statSav.setText(Integer.toString(character.getStatSave(0)));
 			statSav.setMaxWidth(40);
 			statSav.setUnfillable();
 			savThrows.add(statSav,1,i+1);
@@ -326,11 +312,9 @@ public class CharacterSheet extends TabPane implements Listener {
 		skillValList = new ArrayList<TextField>(18);
 		for(int i=0; i<18; i++) {
 			RadioButton butt = new RadioButton();
-			butt.setSelected(character.getSkillProf(i));
+			butt.onActionProperty(new SkillListener(character,butt,i));
 			skillButtList.add(butt);
-			//TODO: add listener
 			UnfillableTextField val = new UnfillableTextField();
-			val.setText(Integer.toString(character.getSkill(i)));
 			val.setUnfillable();
 			val.setMaxWidth(40);
 			skillValList.add(val);
@@ -341,7 +325,6 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		HBox perception = new HBox();
 		perc = new UnfillableTextField();
-		perc.setText(Integer.toString(character.getPassiveWisdom()));
 		perc.setUnfillable();
 		perc.setMaxWidth(40);
 		Label percLabel = new Label("Passive Wisdom (Perception)");
@@ -354,10 +337,9 @@ public class CharacterSheet extends TabPane implements Listener {
 		VBox profLang = new VBox();
 		Label langLabel = new Label("Other Proficiencies and Languages");
 		lang = new TextArea();
-		lang.setText(character.getOtherProfs());
 		lang.setPrefHeight(100);
 		lang.setPrefWidth(150);
-		//TODO: add listener
+		lang.focusedProperty(new LangListener(character,lang));
 		profLang.getChildren().addAll(langLabel,lang);
 		profLang.setAlignment(Pos.CENTER);
 		
@@ -385,31 +367,26 @@ public class CharacterSheet extends TabPane implements Listener {
 		acLabel.setWrapText(true);
 		acLabel.setMaxWidth(40);
 		ac = new UnfillableTextField();
-		ac.setText(Integer.toString(character.getArmorClass())); //mod?
 		ac.setUnfillable();
 		ac.setMaxWidth(40);
 		Label acModLabel = new Label("Buff/Debuff");
 		acMod = new NumericTextField();
-		acMod.setText(Integer.toString(character.getCustomArmorClass()));
 		acMod.setMaxWidth(40);
-		//TODO: add listener
+		acMod.focusedProperty().addListener(new ACListener(character,acMod));
 		
 		Label initLabel = new Label("Initiative");
 		init = new NumericTextField();
-		init.setText(Integer.toString(character.getInit()));
 		init.setMaxWidth(40);
-		//TODO: add listener
+		init.focusedProperty().addListener(new InitListener(character,init));
 		
 		Label spdLabel = new Label("Speed");
 		spd = new UnfillableTextField();
-		spd.setText(Integer.toString(character.getSpeed())); //mod?
 		spd.setUnfillable();
 		spd.setMaxWidth(40);
 		Label spdModLabel = new Label("Buff/Debuff");
 		spdMod = new NumericTextField();
-		spdMod.setText(Integer.toString(character.getCustomSpeed()));
 		spdMod.setMaxWidth(40);
-		//TODO: add listener
+		spdMod.focusedProperty().addListener(new SpdListener(character,spdMod));
 		
 		combatPane.addRow(0,acLabel,acModLabel,initLabel,spdLabel,spdModLabel);
 		combatPane.addRow(1,ac,acMod,init,spd,spdMod);
@@ -420,9 +397,8 @@ public class CharacterSheet extends TabPane implements Listener {
 		Label hpLabel = new Label("Current Hit Points");
 		GridPane.setColumnSpan(hpLabel, 2);
 		hpCurrent = new NumericTextField();
-		hpCurrent.setText(Integer.toString(character.getCurrentHP()));
 		hpCurrent.setMaxWidth(40);
-		//TODO: add listener
+		hpCurrent.focusedProperty().addListener(new CurrentHPListener(character,hpCurrent));
 		Label hpSlash = new Label("/");
 		hpMax = new NumericTextField();
 		hpMax.setText(Integer.toString(character.getMaxHP()));
@@ -580,7 +556,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		armorProp = new TextField();
 		armorProp.setText(character.getArmor().getProperties());
 		Button armorButton = new Button("Update Armor");
-		armorButton.setOnMouseClicked(new ArmorListener(character,armorName.getValue(),armorAC.getText(),armorStrReq.getText(),armorType.getText(),armorProp.getText()));
+		armorButton.setOnMouseClicked(new ArmorListener(character,armorName,armorAC,armorStrReq,armorType,armorProp));
 		
 		
 		armor.getChildren().addAll(armNameLabel,armorName,armACLabel,armorAC,armSRLabel,
@@ -672,7 +648,7 @@ public class CharacterSheet extends TabPane implements Listener {
 			}
 			featureDescrs.add(tempField);
 			Button featureButton = new Button("Update Features");
-			featureButton.setOnMouseClicked(new FeatureListener(character,tempBox.getValue(),tempField.getText(),oldFeatureNames.get(i)));
+			featureButton.setOnMouseClicked(new FeatureListener(character,tempBox,tempField,oldFeatureNames,i));
 			featuresPane.addRow(i+1,tempBox,tempField, featureButton);
 		}
 		

@@ -1,6 +1,8 @@
 package controller;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import model.Armor;
 import model.Character;
@@ -15,13 +17,13 @@ public class ArmorListener implements EventHandler<MouseEvent> {
 	private String prop;
 	
 	
-	public ArmorListener(Character character, String name, String ac, String sr, String type, String prop) {
+	public ArmorListener(Character character, ComboBox<String> name, TextField ac, TextField sr, TextField type, TextField prop) {
 		this.character = character;
-		this.name = name;
-		this.ac = ac;
-		this.sr = sr;
-		this.type = type;
-		this.prop = prop;
+		this.name = name.getValue();
+		this.ac = ac.getText();
+		this.sr = sr.getText();
+		this.type = type.getText();
+		this.prop = prop.getText();
 	}
 
 

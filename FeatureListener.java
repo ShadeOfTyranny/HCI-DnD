@@ -1,6 +1,10 @@
 package controller;
 
+import java.util.ArrayList;
+
 import javafx.event.EventHandler;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import model.Character;
 import model.Feature;
@@ -12,11 +16,11 @@ public class FeatureListener implements EventHandler<MouseEvent> {
 	private String descr;
 	private String oldValue;
 	
-	public FeatureListener(Character character, String name, String descr, String oldValue) {
+	public FeatureListener(Character character, ComboBox<String> name, TextField descr, ArrayList<String> oldValues, int index) {
 		this.character = character;
-		this.name = name;
-		this.descr = descr;
-		this.oldValue = oldValue;
+		this.name = name.getValue();
+		this.descr = descr.getText();
+		this.oldValue = oldValues.get(index);
 	}
 
 	@Override

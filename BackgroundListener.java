@@ -2,6 +2,7 @@ package controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ComboBox;
 import model.Background;
 import model.Character;
 
@@ -10,9 +11,9 @@ public class BackgroundListener implements ChangeListener<Boolean> {
 	private Character character;
 	private int index;
 	
-	public BackgroundListener(Character character, int index) {
+	public BackgroundListener(Character character, ComboBox<String> index) {
 		this.character = character;
-		this.index = index;
+		this.index = index.getSelectionModel().getSelectedIndex();
 	}
 
 	@Override
