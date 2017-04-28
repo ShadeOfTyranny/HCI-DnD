@@ -71,7 +71,7 @@ public class CharacterSheet extends TabPane implements Listener {
 	RadioButton insp;
 	ArrayList<RadioButton> skillButtList, statProfList;
 	ComboBox<String> bg, alignment, charClass, race, subrace, armorName;
-	TextArea lang, equip, pers, ideals, bonds, flaws, allies, treasure, backstory;
+	TextArea lang, equip, pers, ideals, bonds, flaws, allies, otherEquip, backstory;
 	ArrayList<ComboBox<String>> atkNames, features;
 	ArrayList<ArrayList<TextField>> atkValues;
 	ImageView appearance, symbolView;
@@ -163,18 +163,19 @@ public class CharacterSheet extends TabPane implements Listener {
 			    );
 		race.setItems(raceList);
 		//FUTURE: add dialog box for custom races
-		race.focusedProperty().addListener(new RaceListener(character,race,subrace));
 		
 		Label subraceLabel = new Label("Subrace");
 		subrace = new ComboBox<String>();
 		ObservableList<String> subraceList = //lists all classes available
 			    FXCollections.observableArrayList(
-			        "Hill Dwarf","Mountain Dwarf","High Elf","Wood Elf",
+			        "","Hill Dwarf","Mountain Dwarf","High Elf","Wood Elf",
 			        "Dark Elf(Drow)","Lightfoot","Stout","Forest Gnome",
 			        "Rock Gnome"
 			    );
 		subrace.setItems(subraceList);
 		//FUTURE: add dialog box for custom subraces
+		
+		race.focusedProperty().addListener(new RaceListener(character,race,subrace));
 		subrace.focusedProperty().addListener(new SubraceListener(character,subrace));
 		
 		Label alignmentLabel = new Label("Alignment");
@@ -401,9 +402,8 @@ public class CharacterSheet extends TabPane implements Listener {
 		hpCurrent.focusedProperty().addListener(new CurrentHPListener(character,hpCurrent));
 		Label hpSlash = new Label("/");
 		hpMax = new NumericTextField();
-		hpMax.setText(Integer.toString(character.getMaxHP()));
 		hpMax.setMaxWidth(40);
-		//TODO: add listener
+		hpMax.focusedProperty().addListener(new MaxHPListener(character,hpMax));
 		//FUTURE: make Max HP calculated by model?
 		hp.getChildren().addAll(hpCurrent,hpSlash,hpMax);
 		GridPane.setColumnSpan(hp,2);
@@ -411,14 +411,12 @@ public class CharacterSheet extends TabPane implements Listener {
 		Label tempHpLabel = new Label("Temp Hit Points");
 		GridPane.setColumnSpan(tempHpLabel, 2);
 		tempHp = new NumericTextField();
-		tempHp.setText(Integer.toString(character.getTempHP()));
 		GridPane.setColumnSpan(tempHp,2);
 		tempHp.setMaxWidth(84);
-		//TODO: add listener
+		tempHp.focusedProperty().addListener(new TempHPListener(character,tempHp));
 		
 		Label hitDiceLabel = new Label("Hit Dice");
 		hitDice = new UnfillableTextField();
-		hitDice.setText(Integer.toString(character.getCharClass().getHitDie()));
 		hitDice.setMaxWidth(40);
 		hitDice.setUnfillable();
 		
@@ -492,7 +490,6 @@ public class CharacterSheet extends TabPane implements Listener {
 			attacks.addRow(i+2,atkBox,rowFields.get(0),
 					rowFields.get(1),rowFields.get(2),rowFields.get(3));
 		}
-		//TODO: call an update method for attacks
 		Button atkButton = new Button("Update Attacks");
 		atkButton.setOnMouseClicked(new AttackListener(character,atkNames,atkValues));
 		attacks.addRow(7,atkButton);
@@ -511,10 +508,9 @@ public class CharacterSheet extends TabPane implements Listener {
 		for(int i=0; i<5; i++) {
 			Label moneyLabel = new Label(moneyLabels.get(i));
 			TextField moneyField = new NumericTextField();
-			moneyField.setText(Integer.toString(character.getMoney(0)));
 			moneyField.setMaxWidth(40);
 			this.money.add(moneyField);
-			//TODO: add listener (use i to figure out which value to update)
+			moneyField.focusedProperty().addListener(new MoneyListener(character,moneyField,i));
 			money.getChildren().addAll(moneyLabel,moneyField);
 		}
 		
@@ -525,7 +521,6 @@ public class CharacterSheet extends TabPane implements Listener {
 			);
 		armorName = new ComboBox<String>(armorList);
 		armorName.setEditable(true);
-		armorName.setValue(character.getArmor().getName());
 		armorName.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -543,18 +538,14 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		Label armACLabel = new Label("AC");
 		armorAC = new TextField();
-		armorAC.setText(Integer.toString(character.getArmor().getBaseAC()));
 		armorAC.setMaxWidth(40);
 		Label armSRLabel = new Label("Str Req");
 		armorStrReq = new TextField();
-		armorStrReq.setText(Integer.toString(character.getArmor().getStrReq()));
 		armorStrReq.setMaxWidth(40);
 		Label armTypeLabel = new Label("Type");
 		armorType = new TextField();
-		armorType.setText(character.getArmor().getArmorType());
 		Label armPropLabel = new Label("Properties");
 		armorProp = new TextField();
-		armorProp.setText(character.getArmor().getProperties());
 		Button armorButton = new Button("Update Armor");
 		armorButton.setOnMouseClicked(new ArmorListener(character,armorName,armorAC,armorStrReq,armorType,armorProp));
 		
@@ -567,7 +558,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		Label equipLabel = new Label("Equipment");
 		equip = new TextArea();
 		equip.setMinHeight(100);
-		//TODO: add listener
+		equip.focusedProperty().addListener(new EquipListener(character,equip));
 		equipBox.getChildren().addAll(equipLabel,equip);
 			
 		monAndEqp.getChildren().addAll(money,armor,equipBox);
@@ -585,24 +576,20 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		Label persLabel = new Label("Personality Traits");
 		pers = new TextArea();
-		pers.setText(character.getPersonality());
 		pers.setPrefHeight(70);
-		//TODO: add listener
+		pers.focusedProperty().addListener(new PersListener(character,pers));
 		Label idealsLabel = new Label("Ideals");
 		ideals = new TextArea();
-		ideals.setText(character.getIdeals());
 		ideals.setPrefHeight(70);
-		//TODO: add listener
+		ideals.focusedProperty().addListener(new IdealsListener(character,ideals));
 		Label bondsLabel = new Label("Bonds");
 		bonds = new TextArea();
-		bonds.setText(character.getBonds());
 		bonds.setPrefHeight(70);
-		//TODO: add listener
+		bonds.focusedProperty().addListener(new BondsListener(character,bonds));
 		Label flawsLabel = new Label("Flaws");
 		flaws = new TextArea();
-		flaws.setText(character.getFlaws());
 		flaws.setPrefHeight(70);
-		//TODO: add listener
+		flaws.focusedProperty().addListener(new FlawsListener(character,flaws));
 		
 		Label featuresLabel = new Label("Features");
 		
@@ -626,10 +613,6 @@ public class CharacterSheet extends TabPane implements Listener {
 			int index = i;
 			ComboBox<String> tempBox = new ComboBox<String>(featureList);
 			tempBox.setEditable(true);
-			if(i<character.getFeatures().size()) {
-				tempBox.setValue(character.getFeatures().get(i).getName());
-				oldFeatureNames.add(character.getFeatures().get(i).getName());
-			}
 			features.add(tempBox);
 			tempBox.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -643,9 +626,6 @@ public class CharacterSheet extends TabPane implements Listener {
 			TextField tempField = new TextField();
 			tempField.setMinWidth(325);
 			GridPane.setColumnSpan(tempField, 2);
-			if(i<character.getFeatures().size()) {
-				tempField.setText(character.getFeatures().get(i).getDescription());
-			}
 			featureDescrs.add(tempField);
 			Button featureButton = new Button("Update Features");
 			featureButton.setOnMouseClicked(new FeatureListener(character,tempBox,tempField,oldFeatureNames,i));
@@ -686,39 +666,34 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		Label ageLabel = new Label("Age");
 		age = new TextField();
-		age.setText(character.getAge());
 		age.setMaxWidth(80);
-		//TODO: add listener
+		age.focusedProperty().addListener(new AgeListener(character,age));
 		
 		Label eyesLabel = new Label("Eyes");
 		eyes = new TextField();
-		eyes.setText(character.getEyes());
 		eyes.setMaxWidth(80);
-		//TODO: add listener
+		eyes.focusedProperty().addListener(new EyesListener(character,eyes));
 		
 		Label heightLabel = new Label("Height");
 		height = new TextField();
-		height.setText(character.getHeight());
 		height.setMaxWidth(80);
-		//TODO: add listener
+		height.focusedProperty().addListener(new HeightListener(character,height));
 		
 		Label skinLabel = new Label("Skin");
 		skin = new TextField();
-		skin.setText(character.getSkin());
 		skin.setMaxWidth(80);
-		//TODO: add listener
+		skin.focusedProperty().addListener(new SkinListener(character,skin));
 
 		Label weightLabel = new Label("Weight");
 		weight = new TextField();
 		weight.setText(character.getWeight());
 		weight.setMaxWidth(80);
-		//TODO: add listener
+		weight.focusedProperty().addListener(new WeightListener(character,weight));
 		
 		Label hairLabel = new Label("Hair");
 		hair = new TextField();
-		hair.setText(character.getHair());
 		hair.setMaxWidth(80);
-		//TODO: add listener
+		hair.focusedProperty().addListener(new HairListener(character,hair));
 		
 		HBox topRow = new HBox();
 		topRow.getChildren().addAll(name2Label,name2);
@@ -739,7 +714,6 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		Label appLabel = new Label("Character Appearance");
 		appearance = new ImageView();
-		if(character.getAppearance()!=null) { appearance.setImage(new Image(character.getAppearance().toURI().toString())); }
 		Button appButton = new Button("Choose Image");
 		appButton.setOnAction(
 	            new EventHandler<ActionEvent>() {
@@ -755,7 +729,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		Label backstoryLabel = new Label("Character Backstory");
 		backstory = new TextArea();
-		backstory.setText(character.getBackstory());
+		backstory.focusedProperty().addListener(new BackstoryListener(character,backstory));
 		
 		firstColumn.getChildren().addAll(appLabel,appearance,appButton,backstoryLabel,backstory);
 		
@@ -768,15 +742,13 @@ public class CharacterSheet extends TabPane implements Listener {
 		Label alliesAndOrgsLabel = new Label("Allies & Organizations");
 				
 		allies = new TextArea();
-		allies.setText(character.getAlliesOrganizations());
-		//TODO: add listener
+		allies.focusedProperty().addListener(new AlliesListener(character,allies));
 		
 		VBox symbolInfo = new VBox();
 		symbolInfo.setSpacing(5);
 		Label symbolName = new Label("Symbol Name");
 		symbol = new TextField();
-		symbol.setText(character.getSymbolName());
-		//TODO: add listener
+		symbol.focusedProperty().addListener(new SymbolListener(character,symbol)); //symbol name
 		symbolView = new ImageView();
 		if(character.getSymbol()!=null) { symbolView.setImage(new Image(character.getSymbol().toURI().toString())); }
 		Button symbolButton = new Button("Choose Image");
@@ -795,11 +767,10 @@ public class CharacterSheet extends TabPane implements Listener {
 		symbolInfo.getChildren().addAll(symbolName,symbol,symbolView,symbolButton);
 		alliesAndOrgs.getChildren().addAll(allies,symbolInfo);
 		
-		Label treasureLabel = new Label("Other Equipment");
-		treasure = new TextArea();
-		treasure.setText(""/*character.getMoreEquipment()*/); //TODO: uncomment out method; commented out currently b/c Character isn't most recent version
-		//TODO: add listener
-		secondColumn.getChildren().addAll(alliesAndOrgsLabel,alliesAndOrgs,treasureLabel,treasure);
+		Label otherEquipLabel = new Label("Other Equipment");
+		otherEquip = new TextArea();
+		otherEquip.focusedProperty().addListener(new OtherEquipListener(character,otherEquip));
+		secondColumn.getChildren().addAll(alliesAndOrgsLabel,alliesAndOrgs,otherEquipLabel,otherEquip);
 		
 		//Add all components to page and tab
 		
@@ -858,14 +829,6 @@ public class CharacterSheet extends TabPane implements Listener {
 		topOfPage.addRow(0,spellClassLabel,spellAbilityLabel,spellSavLabel,spellBonusLabel);
 		topOfPage.addRow(1,spellClass,spellAbility,spellSav,spellBonus);
 		topOfPage.add(spellUpdate, 6, 0);
-		
-		//Only get values if character is a spellcaster
-		if(character.getCharClass().isSpellCaster()) {
-			spellClass.setText(character.getCharClass().getName());
-			spellAbility.setText(character.getSpellcastingAbility());
-			spellSav.setText(Integer.toString(character.getSpellSaveDC()));
-			spellBonus.setText(Integer.toString(character.getSpellAttackBonus()));
-		}
 		
 		HBox restOfPage = new HBox();
 		restOfPage.setSpacing(15);
@@ -1035,8 +998,6 @@ public class CharacterSheet extends TabPane implements Listener {
 		updated();
 	}
 	
-	//TODO: Replace with single update method
-	
 	
 	//FUTURE: removing background - takes boolean, if true removes proficiencies, if false does not
 	
@@ -1063,7 +1024,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		for(int i=0; i<6; i++) {
 			stats.get(i).setText(Integer.toString(character.getStat(i)));
 			statMods.get(i).setText(Integer.toString(character.getStatMod(i)));
-			statSav.get(i).setText(Integer.toString(character.getStatSave(i)));
+			statSav.get(i).setText(Integer.toString(character.getStatSave(i))); //TODO: custom saving throws in Character not set????
 			statProfList.get(i).setSelected(character.getStatProf(i));
 		}
 		//Skill Proficiencies, Skill Values
@@ -1097,7 +1058,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		//Money
 		for(int i=0; i<5; i++) { money.get(i).setText(Integer.toString(character.getMoney(i)));	}
 		//Attacks
-		for(int i=0; i<atkNames.size(); i++) {
+		for(int i=0; i<character.getAttacks().size(); i++) {
 			atkNames.get(i).setValue(character.getAttacks().get(i).getName());
 			//TODO: test to see if other attack fields get updated
 		}
@@ -1151,8 +1112,8 @@ public class CharacterSheet extends TabPane implements Listener {
 		flaws.setText(character.getFlaws());
 		//Allies and Organizations
 		allies.setText(character.getAlliesOrganizations());
-		//Treasure/Other Equipment
-		treasure.setText(character.getMoreEquipment());
+		//Other Equipment
+		otherEquip.setText(character.getMoreEquipment());
 		//Backstory
 		backstory.setText(character.getBackstory());
 		//Appearance
