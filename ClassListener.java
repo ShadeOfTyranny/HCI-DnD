@@ -9,17 +9,17 @@ import model.Character;
 public class ClassListener implements ChangeListener<Boolean> {
 
 	private Character character;
-	private int index;
+	private ComboBox<String> charClass;
 	
-	public ClassListener(Character character, ComboBox<String> index) {
+	public ClassListener(Character character, ComboBox<String> charClass) {
 		this.character = character;
-		this.index = index.getSelectionModel().getSelectedIndex();
+		this.charClass = charClass;
 	}
 	
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 		if(oldValue) { //if was focused (oldValue is True)
-			character.setCharClass(new CharClass(index));
+			character.setCharClass(new CharClass(charClass.getSelectionModel().getSelectedIndex()));
 		}
 	}
 	

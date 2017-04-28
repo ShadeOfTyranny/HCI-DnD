@@ -8,17 +8,17 @@ import model.Character;
 public class NameListener implements ChangeListener<Boolean> {
 
 	private Character character;
-	private String name;
+	private TextField name;
 	
 	public NameListener(Character character, TextField name) {
 		this.character = character;
-		this.name = name.getText();
+		this.name = name;
 	}
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 		if(oldValue) { //if was focused (oldValue is True)
-			character.setName(name);
+			character.setName(name.getText());
 		}
 	}
 
