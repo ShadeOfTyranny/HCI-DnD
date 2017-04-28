@@ -101,7 +101,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		Label nameLabel = new Label("Character Name"); 
 		name = new TextField(); 
-		name.focusedProperty().addListener(new NameListener(character,name.getText()));
+		name.focusedProperty().addListener(new NameListener(character,name));
 		
 		Label classLabel = new Label("Class");
 		charClass = new ComboBox<String>();
@@ -682,8 +682,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		
 		Label name2Label = new Label("Character Name");
 		name2 = new TextField();
-		name2.setText(character.getName());
-		name2.focusedProperty().addListener(new NameListener(character,name2.getText()));
+		name2.focusedProperty().addListener(new NameListener(character,name2));
 		
 		Label ageLabel = new Label("Age");
 		age = new TextField();

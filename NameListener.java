@@ -1,7 +1,6 @@
 package controller;
 
-import java.awt.TextField;
-
+import javafx.scene.control.TextField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import model.Character;
