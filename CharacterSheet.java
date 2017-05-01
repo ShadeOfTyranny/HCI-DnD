@@ -4,14 +4,45 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import controller.ACListener;
+import controller.AgeListener;
+import controller.AlignmentListener;
+import controller.AlliesListener;
 import controller.ArmorListener;
 import controller.AttackListener;
 import controller.BackgroundListener;
+import controller.BackstoryListener;
+import controller.BondsListener;
 import controller.ClassListener;
+import controller.CurrentHPListener;
+import controller.EquipListener;
 import controller.ExpListener;
+import controller.EyesListener;
 import controller.FeatureListener;
+import controller.FlawsListener;
+import controller.HairListener;
+import controller.HeightListener;
+import controller.IdealsListener;
+import controller.InitListener;
+import controller.InspListener;
+import controller.LangListener;
+import controller.MaxHPListener;
+import controller.MoneyListener;
 import controller.NameListener;
+import controller.OtherEquipListener;
+import controller.PersListener;
+import controller.ProfListener;
+import controller.RaceListener;
+import controller.SkillListener;
+import controller.SkinListener;
+import controller.SpdListener;
 import controller.SpellListener;
+import controller.StatListener;
+import controller.StatProfListener;
+import controller.SubraceListener;
+import controller.SymbolListener;
+import controller.TempHPListener;
+import controller.WeightListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -175,8 +206,8 @@ public class CharacterSheet extends TabPane implements Listener {
 		subrace.setItems(subraceList);
 		//FUTURE: add dialog box for custom subraces
 		
-		race.focusedProperty().addListener(new RaceListener(character,race,subrace));
-		subrace.focusedProperty().addListener(new SubraceListener(character,subrace));
+		race.focusedProperty().addListener(new RaceListener(character,race,subrace)); //TODO: download and import
+		subrace.focusedProperty().addListener(new SubraceListener(character,subrace)); //TODO: download and import
 		
 		Label alignmentLabel = new Label("Alignment");
 		alignment = new ComboBox<String>();
@@ -188,7 +219,9 @@ public class CharacterSheet extends TabPane implements Listener {
 			        "Chaotic Good","Chaotic Neutral","Chaotic Evil"
 			    );
 		alignment.setItems(alignmentList);
-		alignment.focusedProperty().addListener(new AlignmentListener(character,alignment));
+		alignment.focusedProperty().addListener(new AlignmentListener(character,alignment)); //TODO: download and import
+		
+		//TODO: talk to Eowyn about all the custom stuff...?????
 		
 		//Add top section components to layout
 		
@@ -267,7 +300,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		for(int i = 0; i<6; i++) {
 			RadioButton statProf = new RadioButton();
 			statProfList.add(statProf);
-			statProf.onActionProperty(new StatProfListener(character,statProf,i));
+			statProf.setOnAction(new StatProfListener(character,statProf,i));
 			savThrows.add(statProf,0,i+1);
 		}
 		//values for saving throws
@@ -313,7 +346,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		skillValList = new ArrayList<TextField>(18);
 		for(int i=0; i<18; i++) {
 			RadioButton butt = new RadioButton();
-			butt.onActionProperty(new SkillListener(character,butt,i));
+			butt.setOnAction(new SkillListener(character,butt,i));
 			skillButtList.add(butt);
 			UnfillableTextField val = new UnfillableTextField();
 			val.setUnfillable();
@@ -340,7 +373,7 @@ public class CharacterSheet extends TabPane implements Listener {
 		lang = new TextArea();
 		lang.setPrefHeight(100);
 		lang.setPrefWidth(150);
-		lang.focusedProperty(new LangListener(character,lang));
+		lang.focusedProperty().addListener(new LangListener(character,lang));
 		profLang.getChildren().addAll(langLabel,lang);
 		profLang.setAlignment(Pos.CENTER);
 		

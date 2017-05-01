@@ -5,21 +5,22 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import model.Character;
 
-public class ExpListener implements ChangeListener<Boolean> {
+public class MaxHPListener implements ChangeListener<Boolean> {
 
 	private Character character;
-	private TextField exp;
+	private TextField maxHP;
 	
-	public ExpListener(Character character, TextField exp) {
+	public MaxHPListener(Character character,TextField maxHP) {
 		this.character = character;
-		this.exp = exp;
+		this.maxHP = maxHP;
 	}
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-		if(oldValue) { //if was focused (oldValue is True)
-			character.setExperience(Integer.parseInt(exp.getText()));
+		if(oldValue) {
+			character.setMaxHP(Integer.parseInt(maxHP.getText()));
 		}
 	}
+
 
 }

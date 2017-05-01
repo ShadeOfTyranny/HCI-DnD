@@ -2,23 +2,23 @@ package controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import model.Character;
 
-public class ExpListener implements ChangeListener<Boolean> {
+public class IdealsListener implements ChangeListener<Boolean> {
 
 	private Character character;
-	private TextField exp;
+	private TextArea ideals;
 	
-	public ExpListener(Character character, TextField exp) {
+	public IdealsListener(Character character,TextArea ideals) {
 		this.character = character;
-		this.exp = exp;
+		this.ideals = ideals;
 	}
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-		if(oldValue) { //if was focused (oldValue is True)
-			character.setExperience(Integer.parseInt(exp.getText()));
+		if(oldValue) {
+			character.setIdeals(ideals.getText());
 		}
 	}
 

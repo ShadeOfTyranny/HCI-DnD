@@ -5,20 +5,22 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import model.Character;
 
-public class ExpListener implements ChangeListener<Boolean> {
+public class MoneyListener implements ChangeListener<Boolean> {
 
 	private Character character;
-	private TextField exp;
+	private TextField money;
+	private int moneyType;
 	
-	public ExpListener(Character character, TextField exp) {
+	public MoneyListener(Character character,TextField money,int moneyType) {
 		this.character = character;
-		this.exp = exp;
+		this.money = money;
+		this.moneyType = moneyType;
 	}
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-		if(oldValue) { //if was focused (oldValue is True)
-			character.setExperience(Integer.parseInt(exp.getText()));
+		if(oldValue) {
+			character.setMoney(Integer.parseInt(money.getText()), moneyType);
 		}
 	}
 

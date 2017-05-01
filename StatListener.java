@@ -3,22 +3,25 @@ package controller;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
+
 import model.Character;
 
-public class ExpListener implements ChangeListener<Boolean> {
+public class StatListener implements ChangeListener<Boolean> {
 
 	private Character character;
-	private TextField exp;
+	private TextField stat;
+	private int statType;
 	
-	public ExpListener(Character character, TextField exp) {
+	public StatListener(Character character,TextField stat,int statType) {
 		this.character = character;
-		this.exp = exp;
+		this.stat = stat;
+		this.statType = statType;
 	}
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-		if(oldValue) { //if was focused (oldValue is True)
-			character.setExperience(Integer.parseInt(exp.getText()));
+		if(oldValue) {
+			character.setStat(statType,Integer.parseInt(stat.getText()));
 		}
 	}
 

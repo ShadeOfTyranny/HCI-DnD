@@ -5,21 +5,22 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import model.Character;
 
-public class ExpListener implements ChangeListener<Boolean> {
+public class SpdListener implements ChangeListener<Boolean> {
 
 	private Character character;
-	private TextField exp;
+	private TextField spd;
 	
-	public ExpListener(Character character, TextField exp) {
+	public SpdListener(Character character,TextField spd) {
 		this.character = character;
-		this.exp = exp;
+		this.spd = spd;
 	}
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-		if(oldValue) { //if was focused (oldValue is True)
-			character.setExperience(Integer.parseInt(exp.getText()));
+		if(oldValue) {
+			character.setCustomSpeed(Integer.parseInt(spd.getText()));
 		}
 	}
+
 
 }

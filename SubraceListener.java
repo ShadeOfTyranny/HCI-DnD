@@ -4,7 +4,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ComboBox;
 import model.Character;
-import model.Race;
 import model.SubRace;
 
 public class SubraceListener implements ChangeListener<Boolean> {
@@ -12,7 +11,7 @@ public class SubraceListener implements ChangeListener<Boolean> {
 	private Character character;
 	private ComboBox<String> subrace;
 	
-	public SubraceListener(Character character, ComboBox<String> race, ComboBox<String> subrace) {
+	public SubraceListener(Character character, ComboBox<String> subrace) {
 		this.character = character;
 		this.subrace = subrace;
 	}
