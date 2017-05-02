@@ -125,6 +125,82 @@ public class Character implements Serializable {
 		spellAttackBonus = 0;
 	}
 	
+	public Character(Character c){
+		// Strings
+		name = c.getName();
+		alignment = c.getAlignment();
+		personality = c.getPersonality();
+		ideals = c.getIdeals();
+		bonds = c.getBonds();
+		flaws = c.getFlaws();
+		equipment = c.getEquipment();
+		otherProfs_languages = c.getOtherProfs();
+		eyeColor = c.getEyes();
+		hairColor = c.getHair();
+		skinColor = c.getSkin();
+		backstory = c.getBackstory();
+		alliesOrganizations = c.getAlliesOrganizations();
+		moreEquipment = c.getMoreEquipment();
+		age = c.getAge();
+		height = c.getHeight();
+		weight = c.getWeight();
+		size = c.getSize();
+		spellcastingAbility = c.getSpellcastingAbility();
+		symbolName = c.getSymbolName();
+		// special classes
+		charClass = c.getCharClass();
+		race = c.getRace();
+		background = c.getBackground();
+		attacks = c.getAttacks();
+		spells = c.getSpells();
+		features = c.getFeatures();
+		armor = c.getArmor();
+		// integer arrays
+		stats = c.getStats(); // 6
+		skills = c.getSkills(); // 18
+		savingThrows = c.getSavingThrows(); // 6
+		monies = c.getMonies(); // 5
+		// booleans
+		inspired = c.isInspired();
+		spellCaster = c.isSpellCaster();
+		multiclass = c.isMulticlass();
+		// boolean arrays
+		statProfs = c.getStatProfs(); // 6
+		skillProfs = c.getSkillProfs(); // 18
+		// integers
+		level = c.getLevel();
+		experience = c.getExperience();
+		armorClass = c.getArmorClass();
+		speed = c.getSpeed();
+		profBonus = c.getProfBonus();
+		maxHP = c.getMaxHP();
+		currentHP = c.getCurrentHP();
+		tempHP = c.getTempHP();
+		// custom options
+		customStats = c.getCustomStats();
+		customSkills = c.getCustomSkills();
+		customSavingThrows = c.getCustomSavingThrows();
+		customArmorClass = c.getCustomArmorClass();
+		customSpeed = c.getCustomSpeed();
+		customProfBonus = c.getCustomProfBonus();
+		customWisdom = c.getCustomWisdom();
+		init = c.getInit();
+		spellSaveDC = c.getSpellSaveDC();
+		spellAttackBonus = c.getSpellAttackBonus();
+		
+	}
+	
+	// getters for arrays
+	public int[] getStats() { return stats; }
+	public int[] getSkills() { return skills; }
+	public int[] getMonies() { return monies; }
+	public int[] getSavingThrows() { return savingThrows; }
+	public boolean[] getStatProfs() { return statProfs; }
+	public boolean[] getSkillProfs() { return skillProfs; }
+	public int[] getCustomStats() { return customStats; }
+	public int[] getCustomSkills() { return customSkills; }
+	public int[] getCustomSavingThrows() { return customSavingThrows; }
+	
 	// ArrayList add/remove methods
 	public void addAttack(Attack a) {
 		attacks.add(a);
