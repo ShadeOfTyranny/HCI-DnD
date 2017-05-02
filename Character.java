@@ -395,6 +395,7 @@ public class Character implements Serializable {
 			levelUP();
 		}
 		else if (levelGoal < level) {
+			levelDown();
 		}
 	}
 	private void levelUP() {
@@ -406,6 +407,11 @@ public class Character implements Serializable {
 		level++;
 		charClass.levelUp();
 		// hitdice would be affected, but since the player might roll, that can't be done automatically
+		notifyL();
+	}
+	public void levelDown() {
+		level--;
+		checkLevel();
 		notifyL();
 	}
 	public void setArmorClass(int x) { armorClass = x; notifyL();}
